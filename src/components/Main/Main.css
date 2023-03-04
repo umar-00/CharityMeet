@@ -1,0 +1,6 @@
+.main {
+    background-color: #c3c5ca;
+
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+}

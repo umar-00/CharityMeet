@@ -1,0 +1,11 @@
+.sidebar {
+    /* background-color: #1c1f23; */
+    /* background-color: #0a1929; */
+
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+}
+
+.test:nth-child(1) {
+    border-top-width: 0px;
+}
