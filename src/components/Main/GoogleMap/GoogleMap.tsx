@@ -44,11 +44,11 @@ function GoogleMap({}: Props) {
                 defaultCenter={defaultProps.center}
                 defaultZoom={defaultProps.zoom}
             >
-                <AnyReactComponent
+                {/* <AnyReactComponent
                     lat={53.156666}
                     lng={8.6499974}
                     text="My Marker"
-                />
+                /> */}
             </GoogleMapReact>
         </div>
     );
