@@ -16,6 +16,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import SignLanguageIcon from '@mui/icons-material/SignLanguage';
+import Badge from '@mui/material/Badge';
 
 type Props = {};
 
@@ -96,7 +97,17 @@ export default function Sidebar({}: Props) {
                                 placement="top"
                             >
                                 <IconButton onClick={openFilterDialog}>
-                                    <FilterListIcon />
+                                    <Badge
+                                        badgeContent={0}
+                                        showZero
+                                        color="secondary"
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                    >
+                                        <FilterListIcon />
+                                    </Badge>
                                 </IconButton>
                             </Tooltip>
                         </Paper>
