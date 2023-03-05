@@ -66,14 +66,15 @@ export default function Sidebar({}: Props) {
                         Search events
                     </span>
 
-                    <div className="flex items-center justify-evenly px-3 pb-8">
+                    <div className="flex flex-col items-center justify-evenly gap-y-3 px-3 pb-8">
                         <Paper
                             component="form"
                             sx={{
-                                p: '2px 4px',
+                                p: '4px 4px',
+                                pr: '8px',
                                 display: 'flex',
                                 alignItems: 'center',
-                                width: 400,
+                                width: '100%',
                             }}
                         >
                             <InputBase
@@ -111,14 +112,11 @@ export default function Sidebar({}: Props) {
                             </Tooltip>
                         </Paper>
 
-                        {/* <Tooltip
-                            title="Choose filters for event results"
-                            placement="top"
-                        >
-                            <IconButton onClick={openFilterDialog}>
-                                <FilterListIcon />
-                            </IconButton>
-                        </Tooltip> */}
+                        <span className="text-[12px] opacity-70">
+                            By default, all events within 30km of your chosen
+                            location will be shown below. You may change this
+                            through the filter options.
+                        </span>
 
                         <FilterDialog
                             onClose={closeFilterDialog}
