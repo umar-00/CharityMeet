@@ -34,7 +34,6 @@ function GoogleMap({}: Props) {
         <div className="h-full w-full">
             <GoogleMapReact
                 bootstrapURLKeys={{
-                    key: 'AIzaSyBrqycxJSgIlSThKm6R6jlATSopE28uMcQ',
                 }}
                 options={{
                     mapId: `${

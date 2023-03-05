@@ -52,7 +52,7 @@ export default function FilterDialog({ openDialog, onClose }: Props) {
             open={openDialog}
             onClose={handleClose}
         >
-            <DialogTitle>Phone Ringtone</DialogTitle>
+            <DialogTitle>Choose filters</DialogTitle>
             <DialogContent dividers>
                 <div>
                     <h1>TEST</h1>

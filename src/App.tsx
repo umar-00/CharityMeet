@@ -1,10 +1,8 @@
 import './App.css';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import Main from './components/Main/Main';
-import Header from './components/Header/Header';
-import Sidebar from './components/Sidebar/Sidebar';
 import { CssBaseline } from '@mui/material';
 import { useState, useMemo } from 'react';
+import { Dashboard } from './components/Dashboard/Dashboard';
 
 const darkTheme = createTheme({
     palette: {
@@ -24,15 +22,10 @@ function App() {
             }),
         [mode]
     );
-
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <div className="App">
-                <Header mode={mode} setMode={setMode}></Header>
-                <Sidebar></Sidebar>
-                <Main></Main>
-            </div>
+                <Dashboard mode={mode} setMode={setMode}></Dashboard>
         </ThemeProvider>
     );
 }
