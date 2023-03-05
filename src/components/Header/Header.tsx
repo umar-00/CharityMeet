@@ -1,6 +1,5 @@
 import React from 'react';
 import './Header';
-import defaultProfilePicture from '../../assets/default_profile.jpg';
 import {
     Checkbox,
     FormControl,
@@ -16,6 +15,7 @@ import {
 } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { ProfileAvatar } from './ProfileAvatar/ProfileAvatar';
 
 type Props = {
     mode: 'light' | 'dark';
@@ -106,13 +106,7 @@ function Header({ mode, setMode }: Props) {
                     </IconButton>
                 </Tooltip>
 
-                <div className="h-10 w-10 rounded-full">
-                    <img
-                        src={defaultProfilePicture}
-                        alt="profile"
-                        className="h-full w-full rounded-full"
-                    />
-                </div>
+                <ProfileAvatar></ProfileAvatar>
             </header>
         </>
     );
