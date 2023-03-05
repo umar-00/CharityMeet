@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './Sidebar.css';
 import EventListItem from './EventListItem/EventListItem';
 import {
@@ -12,10 +12,9 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import FilterDialog from './FilterDialog/FilterDialog';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import DirectionsIcon from '@mui/icons-material/Directions';
 import SignLanguageIcon from '@mui/icons-material/SignLanguage';
+import { SortEventsButton } from './SortEventsButton/SortEventsButton';
 import Badge from '@mui/material/Badge';
 
 type Props = {};
@@ -131,9 +130,11 @@ export default function Sidebar({}: Props) {
                 <Divider flexItem />
 
                 <div className="flex w-full flex-col overflow-y-auto">
-                    <span className="mb-3 px-3 pt-4 opacity-60">
-                        Event results
-                    </span>
+                    <div className="mb-3 flex items-center justify-between px-3 pt-4 opacity-60">
+                        <span className="">Event results</span>
+                        <SortEventsButton></SortEventsButton>
+                    </div>
+
                     {eventItems}
                 </div>
             </section>
