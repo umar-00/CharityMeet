@@ -1,6 +1,7 @@
 import React from 'react';
 import './Header';
 import {
+    Button,
     Checkbox,
     FormControl,
     IconButton,
@@ -16,10 +17,12 @@ import {
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { ProfileAvatar } from './ProfileAvatar/ProfileAvatar';
+import { NavLink } from 'react-router-dom';
 
 type Props = {
     mode: 'light' | 'dark';
     setMode: React.Dispatch<React.SetStateAction<'light' | 'dark'>>;
+    user?: any;
 };
 
 const names = [
@@ -30,13 +33,13 @@ const names = [
     'Disaster assistance',
 ];
 
-function Header({ mode, setMode }: Props) {
+function Header(props: Props) {
     const [charityType, setCharityType] = React.useState<string[]>([]);
 
     const theme = useTheme();
 
     const toggleColorMode = () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        props.setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
     };
 
     const handleChange = (event: SelectChangeEvent<typeof charityType>) => {
@@ -52,12 +55,63 @@ function Header({ mode, setMode }: Props) {
     return (
         <>
             <header
-                className={`header flex items-center justify-end gap-x-4 p-3 ${
+                className={`header flex items-center justify-end gap-x-4 border-b p-3 ${
                     theme.palette.mode === 'dark'
                         ? '!bg-[#0a1929]'
                         : '!bg-white'
                 }`}
+                style={{ borderColor: theme.palette.divider }}
             >
+                <div className="flex flex-1 gap-x-4">
+                    <NavLink to="/volunteer-dashboard">
+                        {({ isActive }) => (
+                            <>
+                                <Button
+                                    style={{
+                                        backgroundColor: isActive
+                                            ? theme.palette.action.hover
+                                            : 'initial',
+                                    }}
+                                >
+                                    Volunteer
+                                </Button>
+                            </>
+                        )}
+                    </NavLink>
+
+                    <NavLink to="/charity-dashboard">
+                        {({ isActive }) => (
+                            <>
+                                <Button
+                                    style={{
+                                        backgroundColor: isActive
+                                            ? theme.palette.action.hover
+                                            : 'initial',
+                                    }}
+                                >
+                                    Charity
+                                </Button>
+                            </>
+                        )}
+                    </NavLink>
+
+                    <NavLink to="/login">
+                        {({ isActive }) => (
+                            <>
+                                <Button
+                                    style={{
+                                        backgroundColor: isActive
+                                            ? theme.palette.action.hover
+                                            : 'initial',
+                                    }}
+                                >
+                                    Login
+                                </Button>
+                            </>
+                        )}
+                    </NavLink>
+                </div>
+
                 {/* <TextField
                     id="outlined-basic"
                     label="Location"
@@ -95,7 +149,7 @@ function Header({ mode, setMode }: Props) {
                         sx={{ ml: 1 }}
                         onClick={toggleColorMode}
                         color="inherit"
-                        className="h-full self-end"
+                        className="h-full"
                         // size="large"
                     >
                         {theme.palette.mode === 'dark' ? (
@@ -106,7 +160,7 @@ function Header({ mode, setMode }: Props) {
                     </IconButton>
                 </Tooltip>
 
-                <ProfileAvatar></ProfileAvatar>
+                {props.user && <ProfileAvatar />}
             </header>
         </>
     );

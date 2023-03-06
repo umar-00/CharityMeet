@@ -1,16 +1,10 @@
-import {
-    Button,
-    IconButton,
-    ListItemIcon,
-    Menu,
-    MenuItem,
-} from '@mui/material';
+import { Button, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import React, { useState } from 'react';
 import SortIcon from '@mui/icons-material/Sort';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { SortByAlpha, ArrowUpward, SocialDistance } from '@mui/icons-material';
 
-export const SortEventsButton = () => {
+const SortEventsButton = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -77,3 +71,5 @@ export const SortEventsButton = () => {
         </>
     );
 };
+
+export default SortEventsButton;
