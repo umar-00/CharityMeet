@@ -8,7 +8,7 @@ function Error(props: Props) {
         <div>
             <h2>404</h2>
             <p>page not found</p>
-            <Link to="/dashboard">back to the dashboard</Link>
+            <Link to="/login">Click here to go to Login.</Link>
         </div>
     );
 }
