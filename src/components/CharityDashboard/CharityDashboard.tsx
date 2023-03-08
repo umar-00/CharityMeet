@@ -16,7 +16,10 @@ const CharityDashboard = (props: Props) => {
         <div className="grid-container-charity">
             <Header mode={props.mode} setMode={props.setMode} user={1}></Header>
             <Sidebar sidebarContent={<CharitySideBarContent />}></Sidebar>
-            <Main mainContent={<Outlet />}></Main>
+            <Main
+                mainContent={<Outlet />}
+                optionalTailWindClasses="px-12 overflow-y-auto"
+            ></Main>
         </div>
     );
 };
