@@ -17,7 +17,7 @@ const VolunteerDashboard = (props: props) => {
         <div className="grid-container-volunteer">
             <Header mode={props.mode} setMode={props.setMode} user={1}></Header>
             <Sidebar sidebarContent={<VolunteerSidebarContent />}></Sidebar>
-            <Main VolunteerMainContent={<GoogleMap />}></Main>
+            <Main mainContent={<GoogleMap />}></Main>
         </div>
     );
 };

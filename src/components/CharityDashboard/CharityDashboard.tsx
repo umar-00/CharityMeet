@@ -4,7 +4,6 @@ import Header from '../VolunteerDashboard/Header/Header';
 import Main from '../VolunteerDashboard/Main/Main';
 import Sidebar from '../VolunteerDashboard/Sidebar/Sidebar';
 import './CharityDashboard.css';
-import CharityMainContent from './CharityMainContent/CharityMainContent';
 import CharitySideBarContent from './CharitySideBarContent/CharitySideBarContent';
 
 type Props = {
@@ -17,7 +16,7 @@ const CharityDashboard = (props: Props) => {
         <div className="grid-container-charity">
             <Header mode={props.mode} setMode={props.setMode} user={1}></Header>
             <Sidebar sidebarContent={<CharitySideBarContent />}></Sidebar>
-            <Main VolunteerMainContent={<Outlet />}></Main>
+            <Main mainContent={<Outlet />}></Main>
         </div>
     );
 };

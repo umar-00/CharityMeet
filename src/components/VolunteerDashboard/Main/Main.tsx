@@ -3,9 +3,9 @@ import './Main.css';
 import GoogleMap from './GoogleMap/GoogleMap';
 
 type Props = {
-    VolunteerMainContent?: JSX.Element;
+    mainContent?: JSX.Element;
 };
 
 export default function Main(props: Props) {
-    return <main className="main">{props?.VolunteerMainContent}</main>;
+    return <main className="main">{props?.mainContent}</main>;
 }
