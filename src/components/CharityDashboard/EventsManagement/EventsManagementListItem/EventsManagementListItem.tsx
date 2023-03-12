@@ -4,6 +4,7 @@ import noImgPlaceholder from '../../../../assets/No-Image-Placeholder.png';
 import EditIcon from '@mui/icons-material/Edit';
 import MapIcon from '@mui/icons-material/Map';
 import EditEventDialog from './EditEventDialog/EditEventDialog';
+import dayjs from 'dayjs';
 
 type Props = {};
 
@@ -21,7 +22,7 @@ const EventsManagementListItem = (props: Props) => {
 
     return (
         <div
-            className="flex h-44 w-10/12 rounded-xl border-2"
+            className="flex h-52 w-11/12 rounded-xl border-2"
             style={{ borderColor: theme.palette.divider }}
         >
             <img src={noImgPlaceholder} alt="" className="w-44 rounded-l-xl" />
@@ -36,11 +37,21 @@ const EventsManagementListItem = (props: Props) => {
                     <span className="mr-1 text-lg font-semibold">
                         Created on:
                     </span>
-                    <span>08 January 2023, 13:14</span>
+                    <span>
+                        {dayjs()
+                            .subtract(2, 'days')
+                            .format('DD MMMM YYYY, HH:mm')}
+                    </span>
                 </div>
                 <div>
                     <span className="mr-1 text-lg font-semibold">Ends on:</span>
-                    <span>Not defined.</span>
+                    <span>
+                        {dayjs()
+                            .add(4, 'days')
+                            .add(3, 'hours')
+                            .add(43, 'minutes')
+                            .format('DD MMMM YYYY, HH:mm')}
+                    </span>
                 </div>
                 <div>
                     <span className="mr-1 text-lg font-semibold">Address:</span>
