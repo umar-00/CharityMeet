@@ -19,22 +19,19 @@ export default function Sidebar(props: Props) {
     return (
         <>
             <section
-                className={`sidebar text.primary flex flex-col items-center justify-start border-r ${
-                    theme.palette.mode === 'dark'
-                        ? '!bg-[#0a1929]'
-                        : '!bg-white'
-                }`}
-                style={{ borderColor: theme.palette.divider }}
+                className="sidebar text.primary z-10 flex flex-col items-center justify-start border-r shadow-2xl"
+                style={{
+                    borderColor: theme.palette.divider,
+                    backgroundColor: theme.palette.background.default,
+                }}
             >
                 <div
-                    className="flex min-h-[60px] w-full items-center justify-center gap-x-4"
-                    style={{ borderColor: theme.palette.text.primary }}
+                    className="flex min-h-[60px] w-full items-center justify-center gap-x-4 border-b"
+                    style={{ borderColor: theme.palette.divider }}
                 >
                     <span className="text-2xl font-black">Charity Meet</span>
                     <SignLanguageIcon></SignLanguageIcon>
                 </div>
-
-                <Divider flexItem />
 
                 {props?.sidebarContent}
             </section>
