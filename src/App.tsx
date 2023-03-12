@@ -9,6 +9,8 @@ import CharityDashboard from './components/CharityDashboard/CharityDashboard';
 import Login from './components/Login/Login';
 import EventsManagement from './components/CharityDashboard/EventsManagement/EventsManagement';
 import EventsCreation from './components/CharityDashboard/EventsCreation/EventsCreation';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const darkTheme = createTheme({
     palette: {
@@ -39,37 +41,44 @@ function App() {
         [mode]
     );
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Routes>
-                <Route
-                    path="/volunteer-dashboard"
-                    element={
-                        <VolunteerDashboard mode={mode} setMode={setMode} />
-                    }
-                />
-
-                <Route
-                    path="/charity-dashboard"
-                    element={<CharityDashboard mode={mode} setMode={setMode} />}
-                >
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Routes>
                     <Route
-                        index
+                        path="/volunteer-dashboard"
                         element={
-                            <Navigate to="/charity-dashboard/manage" replace />
+                            <VolunteerDashboard mode={mode} setMode={setMode} />
                         }
                     />
-                    <Route path="manage" element={<EventsManagement />} />
-                    <Route path="create" element={<EventsCreation />} />
-                </Route>
 
-                <Route
-                    path="/login"
-                    element={<Login mode={mode} setMode={setMode} />}
-                />
-                <Route path="*" element={<Error />} />
-            </Routes>
-        </ThemeProvider>
+                    <Route
+                        path="/charity-dashboard"
+                        element={
+                            <CharityDashboard mode={mode} setMode={setMode} />
+                        }
+                    >
+                        <Route
+                            index
+                            element={
+                                <Navigate
+                                    to="/charity-dashboard/manage"
+                                    replace
+                                />
+                            }
+                        />
+                        <Route path="manage" element={<EventsManagement />} />
+                        <Route path="map-view" element={<EventsCreation />} />
+                    </Route>
+
+                    <Route
+                        path="/login"
+                        element={<Login mode={mode} setMode={setMode} />}
+                    />
+                    <Route path="*" element={<Error />} />
+                </Routes>
+            </ThemeProvider>
+        </LocalizationProvider>
     );
 }
 
