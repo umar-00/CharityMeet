@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import MapIcon from '@mui/icons-material/Map';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -25,12 +26,12 @@ const CharitySideBarContent = (props: Props) => {
                     </ListItemButton>
                 </Link>
 
-                <Link to="/charity-dashboard/create">
+                <Link to="/charity-dashboard/map-view">
                     <ListItemButton>
                         <ListItemIcon>
-                            <AddBoxIcon fontSize="large" />
+                            <MapIcon fontSize="large" />
                         </ListItemIcon>
-                        <ListItemText primary="Create new events" />
+                        <ListItemText primary="View events on map" />
                     </ListItemButton>
                 </Link>
             </List>
