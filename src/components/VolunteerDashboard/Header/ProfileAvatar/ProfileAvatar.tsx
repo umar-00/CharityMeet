@@ -6,7 +6,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import React, { useState } from 'react';
-// import defaultProfilePicture from '../../../assets/default_profile.jpg';
 
 export const ProfileAvatar = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
