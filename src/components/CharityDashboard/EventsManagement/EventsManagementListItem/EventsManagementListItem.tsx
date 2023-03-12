@@ -1,12 +1,22 @@
 import { useTheme, Button, Divider } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import noImgPlaceholder from '../../../../assets/No-Image-Placeholder.png';
 import EditIcon from '@mui/icons-material/Edit';
 import MapIcon from '@mui/icons-material/Map';
+import EditEventDialog from './EditEventDialog/EditEventDialog';
 
 type Props = {};
 
 const EventsManagementListItem = (props: Props) => {
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpenDialog(true);
+    };
+    const handleClose = () => {
+        setOpenDialog(false);
+    };
+
     const theme = useTheme();
 
     return (
@@ -64,9 +74,17 @@ const EventsManagementListItem = (props: Props) => {
             <Divider flexItem orientation="vertical"></Divider>
 
             <div className="flex flex-col justify-center gap-y-4 p-4">
-                <Button variant="outlined" endIcon={<EditIcon />}>
+                <Button
+                    variant="outlined"
+                    endIcon={<EditIcon />}
+                    onClick={handleClickOpen}
+                >
                     Edit
                 </Button>
+                <EditEventDialog
+                    handleClose={handleClose}
+                    openDialog={openDialog}
+                />
                 <Button variant="outlined" endIcon={<MapIcon />}>
                     View on map
                 </Button>
