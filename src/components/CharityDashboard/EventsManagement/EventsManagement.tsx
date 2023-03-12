@@ -14,12 +14,12 @@ const EventsManagement = (props: Props) => {
 
     return (
         <div
-            className="h-full w-full overflow-y-auto px-4 py-6"
+            className="h-full w-full overflow-y-auto px-12 py-6"
             style={{ backgroundColor: theme.palette.background.default }}
         >
             <h1 className="mb-16 text-2xl font-bold">EventsManagement</h1>
 
-            <div className="flex flex-col items-center gap-y-8">
+            <div className="flex flex-col items-center gap-y-12">
                 {eventsList}
             </div>
         </div>
