@@ -4,9 +4,10 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    RadioGroup,
+    Divider,
 } from '@mui/material';
-import React from 'react';
+import EventTypeSelect from './EventTypeSelect/EventTypeSelect';
+import RadiusSlider from './RadiusSlider/RadiusSlider';
 
 type Props = {
     openDialog: boolean;
@@ -46,24 +47,35 @@ export default function FilterDialog({ openDialog, onClose }: Props) {
 
     return (
         <Dialog
-            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 600 } }}
             maxWidth="xs"
             TransitionProps={{ onEntering: handleEntering }}
             open={openDialog}
             onClose={handleClose}
         >
-            <DialogTitle>Choose filters</DialogTitle>
+            {/* <DialogTitle>Choose filters</DialogTitle> */}
             <DialogContent dividers>
-                <div>
-                    <h1>TEST</h1>
-                    <span>test tes test</span>
+                <div className="flex h-full w-full flex-col gap-y-10 py-2">
+                    <div>
+                        <h1 className="text-lg font-extrabold">
+                            Distance radius
+                        </h1>
+                        <Divider className="!my-4" />
+                        <RadiusSlider />
+                    </div>
+
+                    <div>
+                        <h1 className="text-lg font-extrabold">Event type</h1>
+                        <Divider className="!my-4" />
+                        <EventTypeSelect />
+                    </div>
                 </div>
             </DialogContent>
             <DialogActions>
-                <Button autoFocus onClick={handleClose}>
-                    Cancel
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button variant="contained" onClick={handleOk}>
+                    Confirm filters
                 </Button>
-                <Button onClick={handleOk}>Ok</Button>
             </DialogActions>
         </Dialog>
     );
