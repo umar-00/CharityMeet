@@ -8,7 +8,7 @@ import Error from './components/Error/Error';
 import CharityDashboard from './components/CharityDashboard/CharityDashboard';
 import Login from './components/Login/Login';
 import EventsManagement from './components/CharityDashboard/EventsManagement/EventsManagement';
-import EventsCreation from './components/CharityDashboard/EventsCreation/EventsCreation';
+import ViewEventsOnMap from './components/CharityDashboard/EventsCreation/EventsCreation';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AnimatePresence } from 'framer-motion';
@@ -90,7 +90,7 @@ function App() {
                             />
                             <Route
                                 path="map-view"
-                                element={<EventsCreation />}
+                                element={<ViewEventsOnMap />}
                             />
                         </Route>
 
