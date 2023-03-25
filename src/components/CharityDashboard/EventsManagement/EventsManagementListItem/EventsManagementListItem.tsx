@@ -25,7 +25,11 @@ const EventsManagementListItem = (props: Props) => {
             className="flex h-52 w-11/12 rounded-xl border-2"
             style={{ borderColor: theme.palette.divider }}
         >
-            <img src={noImgPlaceholder} alt="" className="w-44 rounded-l-xl" />
+            <img
+                src={noImgPlaceholder}
+                alt=""
+                className="w-60 rounded-l-xl object-cover"
+            />
             <div className="flex flex-1 flex-col gap-y-4 overflow-auto p-4">
                 <div>
                     <span className="mr-1 text-lg font-semibold">
@@ -92,9 +96,10 @@ const EventsManagementListItem = (props: Props) => {
                 >
                     Edit
                 </Button>
-                <EditEventDialog
+                <AddOrEditEventDialog
                     handleClose={handleClose}
                     openDialog={openDialog}
+                    addOrEditString="Edit"
                 />
                 <Button variant="outlined" endIcon={<MapIcon />}>
                     View on map
