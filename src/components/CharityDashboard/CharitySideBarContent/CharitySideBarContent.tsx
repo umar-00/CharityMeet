@@ -1,61 +1,71 @@
-import {
-    Button,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-} from '@mui/material';
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import { Button, useTheme } from '@mui/material';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import MapIcon from '@mui/icons-material/Map';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 type Props = {};
 
 const CharitySideBarContent = (props: Props) => {
+    const theme = useTheme();
+
     return (
         <div className="flex w-full flex-col overflow-y-auto pt-6">
-            <List component="nav">
-                <Link to="/charity-dashboard/manage">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ViewListIcon fontSize="large" />
-                        </ListItemIcon>
-                        <ListItemText primary="Manage active events" />
-                    </ListItemButton>
-                </Link>
-
-                <Link to="/charity-dashboard/map-view">
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <MapIcon fontSize="large" />
-                        </ListItemIcon>
-                        <ListItemText primary="View events on map" />
-                    </ListItemButton>
-                </Link>
-            </List>
-            {/* <div className="mb-3 flex items-center justify-between pt-4 opacity-60">
-                <span className=""></span>
-            </div> */}
-            {/* <div className="flex w-full flex-col gap-y-4">
-                <Button
-                    variant="outlined"
-                    startIcon={<DeleteIcon />}
-                    className="pt-2"
+            <div className="flex w-full flex-col gap-y-3">
+                <NavLink
+                    to="/charity-dashboard/manage"
+                    className="flex justify-center"
                 >
-                    View active events
-                </Button>
-                <Button variant="outlined" startIcon={<AddBoxIcon />}>
-                    Create new events
-                </Button>
-            </div> */}
+                    {({ isActive }) => (
+                        <>
+                            <Button
+                                style={{
+                                    backgroundColor: isActive
+                                        ? theme.palette.action.hover
+                                        : 'initial',
+                                    color: isActive
+                                        ? undefined
+                                        : theme.palette.text.primary,
+                                    width: '90%',
+                                    justifyContent: 'flex-start',
+                                }}
+                                size="large"
+                                startIcon={
+                                    <ViewListIcon className="!text-3xl" />
+                                }
+                            >
+                                Manage active events
+                            </Button>
+                        </>
+                    )}
+                </NavLink>
+
+                <NavLink
+                    to="/charity-dashboard/map-view"
+                    className="flex justify-center"
+                >
+                    {({ isActive }) => (
+                        <>
+                            <Button
+                                style={{
+                                    backgroundColor: isActive
+                                        ? theme.palette.action.hover
+                                        : 'initial',
+                                    color: isActive
+                                        ? undefined
+                                        : theme.palette.text.primary,
+                                    width: '90%',
+                                    justifyContent: 'flex-start',
+                                }}
+                                size="large"
+                                startIcon={<MapIcon className="!text-3xl" />}
+                            >
+                                View events on map
+                            </Button>
+                        </>
+                    )}
+                </NavLink>
+            </div>
         </div>
-        // <div className="flex w-full flex-col overflow-y-auto px-3 pt-4">
-        //     <Button variant="outlined" startIcon={<DeleteIcon />}>
-        //         Delete
-        //     </Button>
-        // </div>
     );
 };
 
