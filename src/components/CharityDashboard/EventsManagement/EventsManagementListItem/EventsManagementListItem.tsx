@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import noImgPlaceholder from '../../../../assets/No-Image-Placeholder.png';
 import EditIcon from '@mui/icons-material/Edit';
 import MapIcon from '@mui/icons-material/Map';
-import EditEventDialog from './EditEventDialog/EditEventDialog';
+import AddOrEditEventDialog from '../AddOrEditEventDialog/AddOrEditEventDialog';
 import dayjs from 'dayjs';
 
 type Props = {};
