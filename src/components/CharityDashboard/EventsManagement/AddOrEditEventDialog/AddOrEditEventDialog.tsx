@@ -8,14 +8,14 @@ import {
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
-import React from 'react';
 
 type Props = {
     handleClose: () => void;
     openDialog: boolean;
+    addOrEditString: 'Add' | 'Edit';
 };
 
-const EditEventDialog = (props: Props) => {
+const AddOrEditEventDialog = (props: Props) => {
     const numArr: {
         id: number;
         title: string;
@@ -80,7 +80,9 @@ const EditEventDialog = (props: Props) => {
 
     return (
         <Dialog onClose={props.handleClose} open={props.openDialog}>
-            <DialogTitle id="customized-dialog-title">Edit Event</DialogTitle>
+            <DialogTitle id="customized-dialog-title">
+                {props.addOrEditString} Event
+            </DialogTitle>
             <DialogContent dividers>
                 <div className="flex h-full w-full flex-wrap items-center justify-between gap-y-8">
                     {textFields}
@@ -96,4 +98,4 @@ const EditEventDialog = (props: Props) => {
     );
 };
 
-export default EditEventDialog;
+export default AddOrEditEventDialog;
