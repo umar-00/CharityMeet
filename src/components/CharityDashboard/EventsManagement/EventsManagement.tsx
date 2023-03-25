@@ -1,4 +1,4 @@
-import { useTheme } from '@mui/material';
+import AnimatedMain from '../../FramerMotion/AnimatedMain';
 import EventsManagementListItem from './EventsManagementListItem/EventsManagementListItem';
 
 type Props = {};
@@ -13,16 +13,9 @@ const EventsManagement = (props: Props) => {
     ));
 
     return (
-        <div
-            className="h-full w-full overflow-y-auto px-12 py-6"
-            style={{ backgroundColor: theme.palette.background.default }}
-        >
-            <h1 className="mb-16 text-2xl font-bold">EventsManagement</h1>
+        <AnimatedMain>
 
-            <div className="flex flex-col items-center gap-y-12">
-                {eventsList}
-            </div>
-        </div>
+        </AnimatedMain>
     );
 };
 

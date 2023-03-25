@@ -18,7 +18,7 @@ const CharityDashboard = (props: Props) => {
             <Sidebar sidebarContent={<CharitySideBarContent />}></Sidebar>
             <Main
                 mainContent={<Outlet />}
-                optionalTailWindClasses="overflow-y-auto"
+                optionalTailWindClasses="overflow-y-auto overflow-x-hidden"
             ></Main>
         </div>
     );
