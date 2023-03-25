@@ -32,7 +32,7 @@ const EventsManagement = (props: Props) => {
                 style={{ backgroundColor: theme.palette.background.default }}
             >
                 <div className="mb-16 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">EventsManagement</h1>
+                    <h1 className="text-2xl font-bold">Events Management</h1>
 
                     <Button
                         variant="outlined"
