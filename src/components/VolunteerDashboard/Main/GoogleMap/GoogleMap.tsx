@@ -1,24 +1,9 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
 import { useTheme } from '@mui/system';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import EventMarker from './EventMarker/EventMarker';
 
 type Props = {};
-
-const AnyReactComponent = ({
-    text,
-}: {
-    lat: number;
-    lng: number;
-    text: string;
-}) => {
-    return (
-        <>
-            <FilterListIcon />
-            <div>{text}</div>
-        </>
-    );
-};
 
 function GoogleMap({}: Props) {
     const theme = useTheme();
@@ -43,11 +28,8 @@ function GoogleMap({}: Props) {
                 defaultCenter={defaultProps.center}
                 defaultZoom={defaultProps.zoom}
             >
-                {/* <AnyReactComponent
-                    lat={53.156666}
-                    lng={8.6499974}
-                    text="My Marker"
-                /> */}
+                <EventMarker lat={53.168666} lng={8.6499974} />
+                <EventMarker lat={53.166666} lng={8.6499974} />
             </GoogleMapReact>
         </div>
     );
