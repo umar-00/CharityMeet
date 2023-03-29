@@ -16,6 +16,7 @@ export const ProfileAvatar = () => {
     const open = Boolean(anchorEl);
 
     const signout = useStore((state) => state.signout);
+    const user = useStore((state) => state.user);
 
     const navigate = useNavigate();
 
@@ -59,7 +60,7 @@ export const ProfileAvatar = () => {
                         <ContactMail fontSize="small" />
                     </ListItemIcon>
 
-                    <span className="mr-2">user@email.com</span>
+                    <span className="mr-2">{user?.email}</span>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
