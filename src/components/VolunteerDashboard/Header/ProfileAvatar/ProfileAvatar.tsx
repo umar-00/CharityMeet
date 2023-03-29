@@ -1,4 +1,4 @@
-import { Logout } from '@mui/icons-material';
+import { Logout, ContactMail } from '@mui/icons-material';
 import Avatar from '@mui/material/Avatar';
 import { deepOrange } from '@mui/material/colors';
 import IconButton from '@mui/material/IconButton';
@@ -6,10 +6,18 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useUserStore } from '../../../../stores/useUserStore';
+import { supabase } from '../../../../supabase/supabaseClient';
 
 export const ProfileAvatar = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
+    const signout = useUserStore((state) => state.signout);
+
+    const navigate = useNavigate();
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -17,6 +25,12 @@ export const ProfileAvatar = () => {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleLogout = async () => {
+        setAnchorEl(null);
+
+        await signout();
     };
 
     return (
@@ -40,7 +54,14 @@ export const ProfileAvatar = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
+                <MenuItem>
+                    <ListItemIcon>
+                        <ContactMail fontSize="small" />
+                    </ListItemIcon>
+
+                    <span className="mr-2">user@email.com</span>
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>

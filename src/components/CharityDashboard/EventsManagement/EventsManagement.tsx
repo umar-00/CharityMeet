@@ -35,8 +35,9 @@ const EventsManagement = (props: Props) => {
                     <h1 className="text-2xl font-bold">Events Management</h1>
 
                     <Button
-                        variant="outlined"
                         size="large"
+                        variant="contained"
+                        color="primary"
                         endIcon={<AddBoxIcon fontSize="large" />}
                         onClick={handleClickOpen}
                     >

@@ -2,15 +2,8 @@ import React from 'react';
 import './Header';
 import {
     Button,
-    Checkbox,
-    FormControl,
     IconButton,
-    InputLabel,
-    ListItemText,
-    MenuItem,
-    Select,
     SelectChangeEvent,
-    TextField,
     Tooltip,
     useTheme,
 } from '@mui/material';
@@ -105,11 +98,29 @@ function Header(props: Props) {
                                             : 'initial',
                                     }}
                                 >
-                                    Login
+                                    Log in
                                 </Button>
                             </>
                         )}
                     </NavLink>
+
+                    <NavLink to="/signup">
+                        {({ isActive }) => (
+                            <>
+                                <Button
+                                    style={{
+                                        backgroundColor: isActive
+                                            ? theme.palette.action.hover
+                                            : 'initial',
+                                    }}
+                                >
+                                    Sign up
+                                </Button>
+                            </>
+                        )}
+                    </NavLink>
+
+                    {/* <Button onClick={checkSession}>Check Session</Button> */}
                 </div>
 
                 {/* <TextField

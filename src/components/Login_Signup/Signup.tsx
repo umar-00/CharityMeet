@@ -1,25 +1,52 @@
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '../VolunteerDashboard/Header/Header';
 import AnimatedMain from '../FramerMotion/AnimatedMain';
+import { supabase } from '../../supabase/supabaseClient';
+import { toast } from 'react-toastify';
+import { NavLink, useNavigate } from 'react-router-dom';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 type Props = {
     mode: 'light' | 'dark';
     setMode: React.Dispatch<React.SetStateAction<'light' | 'dark'>>;
 };
 
-function Login(props: Props) {
+function Signup(props: Props) {
+    const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const navigate = useNavigate();
+
+    const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        console.log('handleSignUp, text values: ', { email, password });
+
+        setLoading(true);
+
+        // const { error } = await supabase.auth.signUp({ email, password });
+
+        // if (error) {
+        //     console.error(error.message);
+        //     toast.error(error.message);
+        //     return;
+        // }
+        //     console.log('Successfully signed in.');
+        //     toast.success('You have been successfully registered.');
+        //     navigate('/login');
+
+        setEmail('');
+        setPassword('');
+
+        setLoading(false);
+    };
+
     return (
         <>
             <Header mode={props.mode} setMode={props.setMode} />
@@ -34,12 +61,17 @@ function Login(props: Props) {
                         }}
                     >
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <LockOutlinedIcon />
+                            <HowToRegIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
-                            Log in to Charity Meet
+                            Sign up to Charity Meet
                         </Typography>
-                        <Box component="form" noValidate sx={{ mt: 1 }}>
+                        <Box
+                            component="form"
+                            onSubmit={handleSignup}
+                            noValidate
+                            sx={{ mt: 1 }}
+                        >
                             <TextField
                                 margin="normal"
                                 required
@@ -48,6 +80,8 @@ function Login(props: Props) {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                             <TextField
                                 margin="normal"
@@ -58,13 +92,9 @@ function Login(props: Props) {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
-                            {/* <FormControlLabel
-                            control={
-                                <Checkbox value="remember" color="primary" />
-                            }
-                            label="Remember me"
-                        /> */}
                             <Button
                                 type="submit"
                                 fullWidth
@@ -72,29 +102,19 @@ function Login(props: Props) {
                                 color="secondary"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                Log In
+                                Sign Up
                             </Button>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Don't have an account? Sign Up
-                            </Button>
-                            {/* <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                            <Link href="#" variant="body2">
-                            {"Don't have an account? Sign Up"}
-                                </Link>
-                            </Grid>
-                        </Grid> */}
+
+                            <NavLink to="/login">
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ mt: 3, mb: 2 }}
+                                >
+                                    Already have an account? Log in
+                                </Button>
+                            </NavLink>
                         </Box>
                     </Box>
                 </Container>
@@ -103,4 +123,4 @@ function Login(props: Props) {
     );
 }
 
-export default Login;
+export default Signup;

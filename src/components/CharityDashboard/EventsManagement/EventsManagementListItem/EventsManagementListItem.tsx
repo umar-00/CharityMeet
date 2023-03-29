@@ -90,7 +90,8 @@ const EventsManagementListItem = (props: Props) => {
 
             <div className="flex flex-col justify-center gap-y-4 p-4">
                 <Button
-                    variant="outlined"
+                    variant="contained"
+                    color="primary"
                     endIcon={<EditIcon />}
                     onClick={handleClickOpen}
                 >
@@ -101,7 +102,11 @@ const EventsManagementListItem = (props: Props) => {
                     openDialog={openDialog}
                     addOrEditString="Edit"
                 />
-                <Button variant="outlined" endIcon={<MapIcon />}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    endIcon={<MapIcon />}
+                >
                     View on map
                 </Button>
             </div>
