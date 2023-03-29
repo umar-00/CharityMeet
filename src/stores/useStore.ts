@@ -4,7 +4,7 @@ import { createEventsSlice } from './createEventsSlice';
 import { createUserSlice } from './createUserSlice';
 import { StoreState } from './storeState';
 
-export const useUserStore = create<StoreState>()(
+export const useStore = create<StoreState>()(
     devtools((...a) => {
         return {
             ...createUserSlice(...a),

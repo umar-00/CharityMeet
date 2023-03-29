@@ -15,7 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AnimatePresence } from 'framer-motion';
 import Signup from './components/Login_Signup/Signup';
 import { ToastContainer } from 'react-toastify';
-import { useUserStore } from './stores/useUserStore';
+import { useStore } from './stores/useStore';
 import PrivateRoutes from './components/PrivateRoutes/PrivateRoutes';
 
 const darkTheme = createTheme({
@@ -27,7 +27,7 @@ const darkTheme = createTheme({
 function App() {
     const [mode, setMode] = useState<'light' | 'dark'>('dark');
 
-    const getUser = useUserStore((state) => state.getUser);
+    const getUser = useStore((state) => state.getUser);
 
     useEffect(() => {
         console.log('calling getUser from App component');

@@ -8,14 +8,14 @@ import MenuItem from '@mui/material/MenuItem';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useUserStore } from '../../../../stores/useUserStore';
+import { useStore } from '../../../../stores/useStore';
 import { supabase } from '../../../../supabase/supabaseClient';
 
 export const ProfileAvatar = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
-    const signout = useUserStore((state) => state.signout);
+    const signout = useStore((state) => state.signout);
 
     const navigate = useNavigate();
 

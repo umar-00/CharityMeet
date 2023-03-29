@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Header from '../VolunteerDashboard/Header/Header';
 import AnimatedMain from '../FramerMotion/AnimatedMain';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../stores/useUserStore';
+import { useStore } from '../../stores/useStore';
 
 type Props = {
     mode: 'light' | 'dark';
@@ -22,7 +22,7 @@ function Login(props: Props) {
 
     const navigate = useNavigate();
 
-    const login = useUserStore((state) => state.login);
+    const login = useStore((state) => state.login);
     // const redirectToRef = useRef(useUserStore.getState().redirectTo);
 
     // useEffect(

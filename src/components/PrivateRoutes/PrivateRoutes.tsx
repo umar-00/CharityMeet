@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useUserStore } from '../../stores/useUserStore';
+import { useStore } from '../../stores/useStore';
 
 type Props = {};
 
 const PrivateRoutes = (props: Props) => {
-    const user = useUserStore((state) => state.user);
+    const user = useStore((state) => state.user);
 
     useEffect(() => {
         if (!user) {
