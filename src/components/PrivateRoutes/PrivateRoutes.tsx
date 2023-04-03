@@ -6,7 +6,7 @@ import { useStore } from '../../stores/useStore';
 type Props = {};
 
 const PrivateRoutes = (props: Props) => {
-    const user = useStore((state) => state.user);
+    const user = useStore((state) => state.authenticatedUser);
 
     useEffect(() => {
         if (!user) {

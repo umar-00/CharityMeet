@@ -3,12 +3,14 @@ import AnimatedMain from '../../FramerMotion/AnimatedMain';
 import EventsManagementListItem from './EventsManagementListItem/EventsManagementListItem';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import AddOrEditEventDialog from './AddOrEditEventDialog/AddOrEditEventDialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useStore } from '../../../stores/useStore';
 
 type Props = {};
 
 const EventsManagement = (props: Props) => {
     const [openDialog, setOpenDialog] = useState(false);
+    const [eventsList, setEventsList] = useState<JSX.Element[]>();
 
     const handleClickOpen = () => {
         setOpenDialog(true);
@@ -19,11 +21,35 @@ const EventsManagement = (props: Props) => {
 
     const theme = useTheme();
 
-    const testArrForList = [0, 1, 2, 3, 4];
+    const user = useStore((state) => state.authenticatedUser);
+    const getEvents = useStore((state) => state.getEvents);
+    const events = useStore((state) => state.events);
 
-    const eventsList: JSX.Element[] = testArrForList.map((num) => (
-        <EventsManagementListItem key={num} />
-    ));
+    useEffect(() => {
+        const getEventsAsync = async (charity_id: string) => {
+            console.log('calling getEvents wih charity_id: ', charity_id);
+
+            await getEvents(charity_id);
+        };
+
+        if (user) {
+            getEventsAsync(user.user_id);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (events) {
+            console.log(
+                'settings events management list item with new events: ',
+                events
+            );
+            setEventsList(
+                events.map((event) => (
+                    <EventsManagementListItem key={event.id} event={event} />
+                ))
+            );
+        }
+    }, [events]);
 
     return (
         <AnimatedMain>

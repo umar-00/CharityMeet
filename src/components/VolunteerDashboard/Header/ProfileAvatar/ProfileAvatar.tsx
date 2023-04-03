@@ -6,19 +6,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { useStore } from '../../../../stores/useStore';
-import { supabase } from '../../../../supabase/supabaseClient';
 
 export const ProfileAvatar = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
     const signout = useStore((state) => state.signout);
-    const user = useStore((state) => state.user);
-
-    const navigate = useNavigate();
+    const user = useStore((state) => state.authenticatedUser);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);

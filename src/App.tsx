@@ -27,7 +27,7 @@ const darkTheme = createTheme({
 function App() {
     const [mode, setMode] = useState<'light' | 'dark'>('dark');
 
-    const getUser = useStore((state) => state.getUser);
+    const getUser = useStore((state) => state.getUserSessionAndCharity);
 
     useEffect(() => {
         console.log('calling getUser from App component');

@@ -1,26 +1,29 @@
+import { AuthError, AuthResponse, PostgrestError } from '@supabase/supabase-js';
 import { Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { StateCreator } from 'zustand';
-import { User } from '../interfaces/User';
+import { Charity, CharityToCreate, User } from '../interfaces/User';
 import { supabase } from '../supabase/supabaseClient';
 import { StoreState } from './storeState';
 
 type navigateToString = string;
 
 export interface UserSlice {
-    user: User | null;
+    authenticatedUser: User | null;
+    charity: Charity | null;
     isLoading: boolean;
     error: string | null;
     login: (
         email: string,
         password: string
     ) => Promise<void | navigateToString>;
-    signup: (
+    signupCharity: (
         email: string,
-        password: string
+        password: string,
+        charityName: string
     ) => Promise<void | navigateToString>;
     signout: () => Promise<void | navigateToString>;
-    getUser: () => Promise<void | navigateToString>;
+    getUserSessionAndCharity: () => Promise<void | navigateToString>;
 }
 
 export const createUserSlice: StateCreator<
@@ -29,7 +32,9 @@ export const createUserSlice: StateCreator<
     [],
     UserSlice
 > = (set) => ({
-    user: null,
+    authenticatedUser: null,
+
+    charity: null,
 
     isLoading: false,
 
@@ -40,7 +45,7 @@ export const createUserSlice: StateCreator<
     login: async (email: string, password: string) => {
         set({ isLoading: true });
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error, data } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
@@ -55,7 +60,10 @@ export const createUserSlice: StateCreator<
         toast.success('Successfully signed in.');
 
         set(
-            { isLoading: false, user: { email } },
+            {
+                isLoading: false,
+                authenticatedUser: { email, user_id: data.user?.id! },
+            },
             false,
             'Successfully signed in'
         );
@@ -64,14 +72,57 @@ export const createUserSlice: StateCreator<
         // set({ isLoading: false, redirectTo: '/charity-dashboard/manage', user: { email } }, false, "Successfully signed in, redirect to CharityDashboard Manage page");
     },
 
-    signup: async (email: string, password: string) => {
+    signupCharity: async (
+        email: string,
+        password: string,
+        charityName: string
+    ) => {
         set({ isLoading: true });
 
-        const { error } = await supabase.auth.signUp({ email, password });
+        let error: PostgrestError | AuthError | null = null;
+        let data;
+
+        ({ error, data } = await supabase.auth.signUp({ email, password }));
 
         if (error) {
-            console.error(error.message);
+            console.error(error);
             toast.error(error.message);
+            set({ isLoading: false });
+            return;
+        }
+
+        let newlyCreatedUserId: string = data.user?.id!;
+
+        const charityUpdate: CharityToCreate = {
+            name: charityName,
+            is_verified: true,
+            user_id: newlyCreatedUserId,
+        };
+
+        console.log('charityUpdate: ', charityUpdate);
+
+        ({ error } = await supabase.from('charities').insert(charityUpdate));
+
+        if (error) {
+            console.error(error);
+            toast.error(error.message);
+
+            set({ isLoading: true });
+
+            // delete previously signed in user if postgrestError occurs
+            ({ data, error } = await supabase.auth.admin.deleteUser(
+                newlyCreatedUserId
+            ));
+
+            if (error) {
+                console.error(error);
+                toast.error(error.message);
+
+                set({ isLoading: false });
+                return;
+            }
+
+            set({ isLoading: false });
             return;
         }
 
@@ -79,6 +130,7 @@ export const createUserSlice: StateCreator<
         toast.success('You have been successfully registered.');
 
         set({ isLoading: false });
+        return '/login';
         // set({ isLoading: false, redirectTo: '/login' });
     },
 
@@ -94,7 +146,11 @@ export const createUserSlice: StateCreator<
 
         toast.success('Successfully logged out.');
 
-        set({ isLoading: false, user: null }, false, 'Successfully logged out');
+        set(
+            { isLoading: false, authenticatedUser: null },
+            false,
+            'Successfully logged out'
+        );
 
         // set(
         //     { isLoading: false, redirectTo: '/login', user: null },
@@ -103,10 +159,12 @@ export const createUserSlice: StateCreator<
         // );
     },
 
-    getUser: async () => {
+    getUserSessionAndCharity: async () => {
         set({ isLoading: true });
 
-        const { data, error } = await supabase.auth.getSession();
+        let data, error;
+
+        ({ data, error } = await supabase.auth.getSession());
 
         if (error) {
             toast.error(error.message);
@@ -134,12 +192,38 @@ export const createUserSlice: StateCreator<
         set(
             {
                 isLoading: false,
-                user: { email: data.session?.user.email! },
+                authenticatedUser: {
+                    email: data.session.user.email!,
+                    user_id: data.session.user.id,
+                },
             },
             false,
-            'User successfully fetched'
+            'User session successfully fetched'
         );
-        console.log('getSession from useUserStore: ', { data, error });
+        console.log('getUserSessionAndCharity, auth_user: ', { data, error });
+
+        set({ isLoading: true });
+
+        ({ data, error } = await supabase
+            .from('charities')
+            .select(`name, is_verified, user_id`)
+            .eq('user_id', data.session.user.id)
+            .single());
+
+        set(
+            {
+                isLoading: false,
+                charity: {
+                    is_verified: data?.is_verified,
+                    name: data?.name,
+                },
+            },
+            false,
+            'Charity successfully fetched'
+        );
+
+        console.log('getUserSessionAndCharity, charity: ', { data, error });
+
         return;
     },
 });

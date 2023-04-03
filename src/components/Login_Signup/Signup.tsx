@@ -7,10 +7,9 @@ import Container from '@mui/material/Container';
 import React, { useState } from 'react';
 import Header from '../VolunteerDashboard/Header/Header';
 import AnimatedMain from '../FramerMotion/AnimatedMain';
-import { supabase } from '../../supabase/supabaseClient';
-import { toast } from 'react-toastify';
 import { NavLink, useNavigate } from 'react-router-dom';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import { useStore } from '../../stores/useStore';
 
 type Props = {
     mode: 'light' | 'dark';
@@ -18,33 +17,26 @@ type Props = {
 };
 
 function Signup(props: Props) {
-    const [loading, setLoading] = useState(false);
+    const [charityName, setCharityName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
 
+    const signupCharity = useStore((state) => state.signupCharity);
+
     const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log('handleSignUp, text values: ', { email, password });
 
-        setLoading(true);
+        const navigateTo = await signupCharity(email, password, charityName);
 
-        // const { error } = await supabase.auth.signUp({ email, password });
-
-        // if (error) {
-        //     console.error(error.message);
-        //     toast.error(error.message);
-        //     return;
-        // }
-        //     console.log('Successfully signed in.');
-        //     toast.success('You have been successfully registered.');
-        //     navigate('/login');
+        if (navigateTo) {
+            navigate(navigateTo);
+        }
 
         setEmail('');
         setPassword('');
-
-        setLoading(false);
     };
 
     return (
@@ -69,9 +61,24 @@ function Signup(props: Props) {
                         <Box
                             component="form"
                             onSubmit={handleSignup}
-                            noValidate
                             sx={{ mt: 1 }}
                         >
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="charityName"
+                                label="Charity name"
+                                name="charityName"
+                                value={charityName}
+                                // error={charityName.length === 0}
+                                // helperText={
+                                //     charityName.length === 0
+                                //         ? 'Name cannot be empty.'
+                                //         : ''
+                                // }
+                                onChange={(e) => setCharityName(e.target.value)}
+                            />
                             <TextField
                                 margin="normal"
                                 required
@@ -95,6 +102,7 @@ function Signup(props: Props) {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+
                             <Button
                                 type="submit"
                                 fullWidth

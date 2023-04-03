@@ -44,17 +44,12 @@ function Login(props: Props) {
         const navigateTo = await login(email, password);
 
         console.log('after login: ', {
-            // redirectTo: redirectToRef.current,
             navigateTo,
         });
 
         if (navigateTo) {
             navigate(navigateTo);
         }
-
-        // if (redirectToRef.current) {
-        //     navigate(redirectToRef.current);
-        // }
 
         setEmail('');
         setPassword('');
