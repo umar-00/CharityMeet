@@ -93,6 +93,7 @@ const EventsManagementListItem = (props: Props) => {
                     openDialog={openDialog}
                     addOrEditString="Edit"
                     event={props.event}
+                    key={props.event.id}
                 />
 
                 <Button variant="outlined" color="primary" endIcon={<MapIcon />}>

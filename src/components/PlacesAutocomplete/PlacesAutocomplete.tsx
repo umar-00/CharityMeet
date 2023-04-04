@@ -21,6 +21,7 @@ type Props = {
         fieldWidth: string;
         register: UseFormRegister<any>;
         setAddress: React.Dispatch<React.SetStateAction<EventAddress | undefined>>;
+        address: EventAddress | undefined;
         initialAutoCompleteValue: string | undefined;
     };
 };
@@ -62,7 +63,7 @@ const PlacesAutocomplete = (props: Props) => {
     // Sets initial value in Autocomplete
     useLayoutEffect(() => {
         if (customTextField && customTextField.initialAutoCompleteValue) {
-            console.log('on placeautomcomplete mount: ', { value });
+            console.log('on placesAutocomplete mount: ', { value });
             setValue(customTextField.initialAutoCompleteValue);
         }
     }, []);
@@ -101,9 +102,6 @@ const PlacesAutocomplete = (props: Props) => {
                 value={value}
                 onChange={handlePlaceSelect}
                 disabled={!ready}
-                // defaultValue={
-                //     { place_id: '1', description: 'Test address' } || ''
-                // }
                 renderInput={(params) => {
                     const { InputLabelProps, InputProps, ...rest } = params;
                     return (
@@ -115,7 +113,16 @@ const PlacesAutocomplete = (props: Props) => {
                                     type={customTextField.type}
                                     InputLabelProps={customTextField.inputLabelPropsShrink}
                                     {...customTextField.register(customTextField.fieldName)}
+                                    error={!customTextField.address}
+                                    helperText={
+                                        !customTextField.address ? 'Please select an address.' : ''
+                                    }
                                     onChange={(event) => {
+                                        /* Prevents invalid address from being sent in PUT/update request
+                                        in parent dialog. Setting to undefined causes above error (and
+                                        toastify error in form submit handler of parent dialog) to appear;
+                                        asking users to select an (valid) address. */
+                                        customTextField.setAddress(undefined);
                                         setValue(event.target.value);
                                     }}
                                     ref={params.InputProps.ref}

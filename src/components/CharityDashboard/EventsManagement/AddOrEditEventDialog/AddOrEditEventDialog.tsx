@@ -13,7 +13,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { EventAddress, Event, EventToCreate, EventToUpdate } from '../../../../interfaces/Event';
 import { useStore } from '../../../../stores/useStore';
 import PlacesAutocomplete from '../../../PlacesAutocomplete/PlacesAutocomplete';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 type Inputs = {
@@ -38,6 +38,46 @@ type InputFieldConfiguration = {
     type: 'text' | 'date' | 'number' | 'address';
     multiLine?: boolean;
 };
+
+const inputFieldsArr: InputFieldConfiguration[] = [
+    {
+        id: 1,
+        fieldName: 'eventTitle',
+        label: 'Event title',
+        type: 'text',
+    },
+    {
+        id: 2,
+        fieldName: 'createdOn',
+        label: 'Created on',
+        type: 'date',
+    },
+    {
+        id: 3,
+        fieldName: 'endsOn',
+        label: 'Ends on',
+        type: 'date',
+    },
+    {
+        id: 4,
+        fieldName: 'address',
+        label: 'Address',
+        type: 'address',
+    },
+    {
+        id: 5,
+        fieldName: 'volunteersNeeded',
+        label: 'Volunteers needed',
+        type: 'number',
+    },
+    {
+        id: 6,
+        fieldName: 'eventDescription',
+        label: 'Event description',
+        type: 'text',
+        multiLine: true,
+    },
+];
 
 type Props = {
     handleClose: () => void;
@@ -70,91 +110,17 @@ const AddOrEditEventDialog = (props: Props) => {
         },
     });
 
-    const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        console.log({
-            ...data,
-            createdOn: data.createdOn.toDate(),
-            endsOn: data.endsOn.toDate(),
-        });
-
-        console.log({ touchedFields });
-
-        if (!address) {
-            toast.error('Please select a valid address.');
-            return;
+    useEffect(() => {
+        if (!address && props.addOrEditString === 'Edit' && props.event?.address?.description) {
+            setAddress(props.event.address);
+            console.log('useEffect triggered, dialog: ', { event: props.event, address });
         }
-
-        if (props.addOrEditString === 'Edit') {
-            const eventToUpdate: EventToUpdate = {
-                id: props.event?.id!,
-                // address: data.address,
-                address: address ?? null,
-                description: data.eventDescription,
-                title: data.eventTitle,
-                created_at: data.createdOn.toDate(),
-                ends_at: data.endsOn.toDate(),
-                volunteers_needed: data.volunteersNeeded,
-            };
-
-            await updateEvent(eventToUpdate, props.event?.id!);
-        } else if (props.addOrEditString === 'Add') {
-            const eventToInsert: EventToCreate = {
-                address: address ?? null,
-                charity_id: user?.user_id!,
-                description: data.eventDescription,
-                title: data.eventTitle,
-                created_at: data.createdOn.toDate(),
-                ends_at: data.endsOn.toDate(),
-                volunteers_needed: data.volunteersNeeded,
-            };
-
-            await addEvent(eventToInsert);
-        }
-
-        props.handleClose();
-    };
-
-    const inputFieldsArr: InputFieldConfiguration[] = [
-        {
-            id: 1,
-            fieldName: 'eventTitle',
-            label: 'Event title',
-            type: 'text',
-        },
-        {
-            id: 2,
-            fieldName: 'createdOn',
-            label: 'Created on',
-            type: 'date',
-        },
-        {
-            id: 3,
-            fieldName: 'endsOn',
-            label: 'Ends on',
-            type: 'date',
-        },
-        {
-            id: 4,
-            fieldName: 'address',
-            label: 'Address',
-            type: 'address',
-        },
-        {
-            id: 5,
-            fieldName: 'volunteersNeeded',
-            label: 'Volunteers needed',
-            type: 'number',
-        },
-        {
-            id: 6,
-            fieldName: 'eventDescription',
-            label: 'Event description',
-            type: 'text',
-            multiLine: true,
-        },
-    ];
+    }, []);
 
     const renderInputField: (inputField: InputFieldConfiguration) => JSX.Element = (inputField) => {
+        // TODO - memoize this function using useCallback
+        // console.log('renderInputField');
+
         if (inputField.type === 'date') {
             return (
                 <Controller
@@ -192,6 +158,7 @@ const AddOrEditEventDialog = (props: Props) => {
                         register: register,
                         fieldName: inputField.fieldName,
                         setAddress: setAddress,
+                        address: address,
                         initialAutoCompleteValue: props.event?.address?.description,
                     }}
                 />
@@ -219,6 +186,49 @@ const AddOrEditEventDialog = (props: Props) => {
         </div>
     ));
 
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        console.log({
+            ...data,
+            createdOn: data.createdOn.toDate(),
+            endsOn: data.endsOn.toDate(),
+        });
+
+        console.log('form submit: ', { touchedFields, addressRef: address });
+
+        if (!address) {
+            toast.error('Please select a valid address.');
+            return;
+        }
+
+        if (props.addOrEditString === 'Edit') {
+            const eventToUpdate: EventToUpdate = {
+                id: props.event?.id!,
+                address: address ?? null,
+                description: data.eventDescription,
+                title: data.eventTitle,
+                created_at: data.createdOn.toDate(),
+                ends_at: data.endsOn.toDate(),
+                volunteers_needed: data.volunteersNeeded,
+            };
+
+            await updateEvent(eventToUpdate, props.event?.id!);
+        } else if (props.addOrEditString === 'Add') {
+            const eventToInsert: EventToCreate = {
+                address: address ?? null,
+                charity_id: user?.user_id!,
+                description: data.eventDescription,
+                title: data.eventTitle,
+                created_at: data.createdOn.toDate(),
+                ends_at: data.endsOn.toDate(),
+                volunteers_needed: data.volunteersNeeded,
+            };
+
+            await addEvent(eventToInsert);
+        }
+
+        props.handleClose();
+    };
+
     return (
         <Dialog onClose={props.handleClose} open={props.openDialog}>
             <DialogTitle id="customized-dialog-title">{props.addOrEditString} Event</DialogTitle>
@@ -244,40 +254,3 @@ const AddOrEditEventDialog = (props: Props) => {
 };
 
 export default AddOrEditEventDialog;
-
-// {obj.type === 'date' ? (
-//     <Controller
-//         control={control}
-//         name={obj.fieldName}
-//         defaultValue={dayjs()}
-//         render={({ field }) => (
-//             <DateTimePicker
-//                 {...field}
-//                 value={field.value ? field.value : dayjs()}
-//                 onOpen={() => console.log(field.value)}
-//                 onChange={(date: any) => {
-//                     field.onChange(date);
-//                 }}
-//                 label={obj.label}
-//                 className="w-64"
-//                 slotProps={{
-//                     actionBar: {
-//                         actions: ['today'],
-//                     },
-//                 }}
-//             />
-//         )}
-//     />
-// ) : (
-//     <TextField
-//         id="outlined-basic"
-//         required
-//         label={obj.label}
-//         type={obj.type}
-//         InputLabelProps={{ shrink: true }}
-//         multiline={obj.multiLine === true ? true : false}
-//         rows={obj.multiLine === true ? 3 : 1}
-//         className="w-64"
-//         {...register(obj.fieldName)}
-//     />
-// )}
