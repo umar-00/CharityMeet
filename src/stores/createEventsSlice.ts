@@ -31,7 +31,8 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
         ({ data, error } = await supabase
             .from('events')
             .select(`id, title, address, volunteers_needed, description, created_at, ends_at, charity_id, charity_name`)
-            .eq('charity_id', charity_id));
+            .eq('charity_id', charity_id)
+            .order('title', { ascending: true }));
 
         if (error) {
             console.error(error);
@@ -59,7 +60,8 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
 
         ({ data, error } = await supabase
             .from('events')
-            .select(`id, title, address, volunteers_needed, description, created_at, ends_at, charity_id,charity_name`));
+            .select(`id, title, address, volunteers_needed, description, created_at, ends_at, charity_id,charity_name`)
+            .order('title', { ascending: true }));
 
         if (error) {
             console.error(error);
