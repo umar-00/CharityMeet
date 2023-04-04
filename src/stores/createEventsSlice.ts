@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand'
 import { StoreState } from './storeState';
-import { Event, EventToCreateAndUpdate } from '../interfaces/Event';
+import { Event, EventToCreate, EventToUpdate } from '../interfaces/Event';
 import { supabase } from '../supabase/supabaseClient';
 import { toast } from 'react-toastify';
 
@@ -8,9 +8,10 @@ export interface EventsSlice {
     events: Event[] | null,
     isLoading: boolean,
     error: string | null,
-    getEvents: (charity_id: string) => Promise<Event[] | null>,
-    addEvent: (event: EventToCreateAndUpdate) => Promise<void>,
-    updateEvent: (event: Event, eventId: number) => Promise<void>,
+    getEventsByCharityId: (charity_id: string) => Promise<Event[] | null>,
+    getAllEvents: () => Promise<Event[] | null>,
+    addEvent: (event: EventToCreate) => Promise<void>,
+    updateEvent: (event: EventToUpdate, eventId: number) => Promise<void>,
     deleteEvent: (eventId: number) => Promise<void>,
 };
 
@@ -21,7 +22,7 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
 
     error: null,
 
-    getEvents: async (charity_id: string) => {
+    getEventsByCharityId: async (charity_id: string) => {
         set({ isLoading: true });
 
         let error: any;
@@ -29,8 +30,36 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
 
         ({ data, error } = await supabase
             .from('events')
-            .select(`id, title, address, volunteers_needed, description, created_at, ends_at, charity_id`)
+            .select(`id, title, address, volunteers_needed, description, created_at, ends_at, charity_id, charity_name`)
             .eq('charity_id', charity_id));
+
+        if (error) {
+            console.error(error);
+            toast.error(error.message);
+
+            set({ isLoading: false });
+            return null;
+        }
+
+        console.log('events fetched: ', data);
+
+        set({
+            isLoading: false,
+            events: data
+        }, false, "Events successfully fetched");
+
+        return data;
+    },
+
+    getAllEvents: async () => {
+        set({ isLoading: true });
+
+        let error: any;
+        let data: Event[] | null;
+
+        ({ data, error } = await supabase
+            .from('events')
+            .select(`id, title, address, volunteers_needed, description, created_at, ends_at, charity_id,charity_name`));
 
         if (error) {
             console.error(error);
@@ -113,7 +142,6 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
             .map(e => {
                 if (e.id === eventId) {
                     e.address = event.address;
-                    e.charity_id = event.charity_id;
                     e.created_at = event.created_at;
                     e.description = event.description;
                     e.ends_at = event.ends_at;

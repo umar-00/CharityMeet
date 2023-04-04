@@ -10,16 +10,11 @@ import {
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { supabase } from '../../../../supabase/supabaseClient';
-import { Event, EventToCreateAndUpdate } from '../../../../interfaces/Event';
+import { EventAddress, Event, EventToCreate, EventToUpdate } from '../../../../interfaces/Event';
 import { useStore } from '../../../../stores/useStore';
-
-type Props = {
-    handleClose: () => void;
-    openDialog: boolean;
-    addOrEditString: 'Add' | 'Edit';
-    event?: Event;
-};
+import PlacesAutocomplete from '../../../PlacesAutocomplete/PlacesAutocomplete';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 type Inputs = {
     eventTitle: string;
@@ -30,10 +25,33 @@ type Inputs = {
     eventDescription: string;
 };
 
+type InputFieldConfiguration = {
+    id: number;
+    fieldName:
+        | 'address'
+        | 'eventTitle'
+        | 'createdOn'
+        | 'endsOn'
+        | 'volunteersNeeded'
+        | 'eventDescription';
+    label: string;
+    type: 'text' | 'date' | 'number' | 'address';
+    multiLine?: boolean;
+};
+
+type Props = {
+    handleClose: () => void;
+    openDialog: boolean;
+    addOrEditString: 'Add' | 'Edit';
+    event?: Event;
+};
+
 const AddOrEditEventDialog = (props: Props) => {
     const user = useStore((state) => state.authenticatedUser);
     const addEvent = useStore((state) => state.addEvent);
     const updateEvent = useStore((state) => state.updateEvent);
+
+    const [address, setAddress] = useState<EventAddress>();
 
     const {
         register,
@@ -43,7 +61,7 @@ const AddOrEditEventDialog = (props: Props) => {
         formState: { errors, touchedFields },
     } = useForm<Inputs>({
         defaultValues: {
-            address: props.event?.address,
+            // address: props.event?.address.description,
             createdOn: dayjs(props.event?.created_at),
             endsOn: dayjs(props.event?.ends_at),
             eventDescription: props.event?.description,
@@ -59,11 +77,18 @@ const AddOrEditEventDialog = (props: Props) => {
             endsOn: data.endsOn.toDate(),
         });
 
+        console.log({ touchedFields });
+
+        if (!address) {
+            toast.error('Please select a valid address.');
+            return;
+        }
+
         if (props.addOrEditString === 'Edit') {
-            const eventToUpdate: Event = {
+            const eventToUpdate: EventToUpdate = {
                 id: props.event?.id!,
-                address: data.address,
-                charity_id: user?.user_id!,
+                // address: data.address,
+                address: address ?? null,
                 description: data.eventDescription,
                 title: data.eventTitle,
                 created_at: data.createdOn.toDate(),
@@ -72,11 +97,9 @@ const AddOrEditEventDialog = (props: Props) => {
             };
 
             await updateEvent(eventToUpdate, props.event?.id!);
-        }
-
-        if (props.addOrEditString === 'Add') {
-            const eventToInsert: EventToCreateAndUpdate = {
-                address: data.address,
+        } else if (props.addOrEditString === 'Add') {
+            const eventToInsert: EventToCreate = {
+                address: address ?? null,
                 charity_id: user?.user_id!,
                 description: data.eventDescription,
                 title: data.eventTitle,
@@ -91,57 +114,52 @@ const AddOrEditEventDialog = (props: Props) => {
         props.handleClose();
     };
 
-    const numArr: {
-        id: number;
-        title:
-            | 'address'
-            | 'eventTitle'
-            | 'createdOn'
-            | 'endsOn'
-            | 'volunteersNeeded'
-            | 'eventDescription';
-        type: string;
-        multiLine?: boolean;
-    }[] = [
+    const inputFieldsArr: InputFieldConfiguration[] = [
         {
             id: 1,
-            title: 'eventTitle',
+            fieldName: 'eventTitle',
+            label: 'Event title',
             type: 'text',
         },
         {
             id: 2,
-            title: 'createdOn',
+            fieldName: 'createdOn',
+            label: 'Created on',
             type: 'date',
         },
         {
             id: 3,
-            title: 'endsOn',
+            fieldName: 'endsOn',
+            label: 'Ends on',
             type: 'date',
         },
         {
             id: 4,
-            title: 'address',
-            type: 'text',
+            fieldName: 'address',
+            label: 'Address',
+            type: 'address',
         },
         {
             id: 5,
-            title: 'volunteersNeeded',
+            fieldName: 'volunteersNeeded',
+            label: 'Volunteers needed',
             type: 'number',
         },
         {
             id: 6,
-            title: 'eventDescription',
+            fieldName: 'eventDescription',
+            label: 'Event description',
             type: 'text',
             multiLine: true,
         },
     ];
 
-    const textFields: JSX.Element[] = numArr.map((obj) => (
-        <div className="flex flex-col" key={obj.id}>
-            {obj.type === 'date' ? (
+    const renderInputField: (inputField: InputFieldConfiguration) => JSX.Element = (inputField) => {
+        if (inputField.type === 'date') {
+            return (
                 <Controller
                     control={control}
-                    name={obj.title}
+                    name={inputField.fieldName}
                     defaultValue={dayjs()}
                     render={({ field }) => (
                         <DateTimePicker
@@ -151,7 +169,7 @@ const AddOrEditEventDialog = (props: Props) => {
                             onChange={(date: any) => {
                                 field.onChange(date);
                             }}
-                            label={field.name}
+                            label={inputField.label}
                             className="w-64"
                             slotProps={{
                                 actionBar: {
@@ -161,27 +179,49 @@ const AddOrEditEventDialog = (props: Props) => {
                         />
                     )}
                 />
-            ) : (
+            );
+        } else if (inputField.type === 'address') {
+            return (
+                <PlacesAutocomplete
+                    customTextField={{
+                        inputLabelPropsShrink: { shrink: true },
+                        fieldWidth: '256px',
+                        label: inputField.label,
+                        type: inputField.type,
+                        required: true,
+                        register: register,
+                        fieldName: inputField.fieldName,
+                        setAddress: setAddress,
+                        initialAutoCompleteValue: props.event?.address?.description,
+                    }}
+                />
+            );
+        } else {
+            return (
                 <TextField
                     id="outlined-basic"
                     required
-                    label={obj.title}
-                    type={obj.type}
+                    label={inputField.label}
+                    type={inputField.type}
                     InputLabelProps={{ shrink: true }}
-                    multiline={obj.multiLine === true ? true : false}
-                    rows={obj.multiLine === true ? 3 : 1}
+                    multiline={inputField.multiLine === true ? true : false}
+                    rows={inputField.multiLine === true ? 3 : 1}
                     className="w-64"
-                    {...register(obj.title)}
+                    {...register(inputField.fieldName)}
                 />
-            )}
+            );
+        }
+    };
+
+    const textFields: JSX.Element[] = inputFieldsArr.map((obj) => (
+        <div className="flex flex-col" key={obj.id}>
+            {renderInputField(obj)}
         </div>
     ));
 
     return (
         <Dialog onClose={props.handleClose} open={props.openDialog}>
-            <DialogTitle id="customized-dialog-title">
-                {props.addOrEditString} Event
-            </DialogTitle>
+            <DialogTitle id="customized-dialog-title">{props.addOrEditString} Event</DialogTitle>
             <DialogContent dividers>
                 <Box
                     className="flex h-full w-full flex-wrap items-center justify-between gap-y-8"
@@ -204,3 +244,40 @@ const AddOrEditEventDialog = (props: Props) => {
 };
 
 export default AddOrEditEventDialog;
+
+// {obj.type === 'date' ? (
+//     <Controller
+//         control={control}
+//         name={obj.fieldName}
+//         defaultValue={dayjs()}
+//         render={({ field }) => (
+//             <DateTimePicker
+//                 {...field}
+//                 value={field.value ? field.value : dayjs()}
+//                 onOpen={() => console.log(field.value)}
+//                 onChange={(date: any) => {
+//                     field.onChange(date);
+//                 }}
+//                 label={obj.label}
+//                 className="w-64"
+//                 slotProps={{
+//                     actionBar: {
+//                         actions: ['today'],
+//                     },
+//                 }}
+//             />
+//         )}
+//     />
+// ) : (
+//     <TextField
+//         id="outlined-basic"
+//         required
+//         label={obj.label}
+//         type={obj.type}
+//         InputLabelProps={{ shrink: true }}
+//         multiline={obj.multiLine === true ? true : false}
+//         rows={obj.multiLine === true ? 3 : 1}
+//         className="w-64"
+//         {...register(obj.fieldName)}
+//     />
+// )}

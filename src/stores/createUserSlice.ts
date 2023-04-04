@@ -1,5 +1,4 @@
 import { AuthError, AuthResponse, PostgrestError } from '@supabase/supabase-js';
-import { Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { StateCreator } from 'zustand';
 import { Charity, CharityToCreate, User } from '../interfaces/User';
@@ -13,10 +12,7 @@ export interface UserSlice {
     charity: Charity | null;
     isLoading: boolean;
     error: string | null;
-    login: (
-        email: string,
-        password: string
-    ) => Promise<void | navigateToString>;
+    login: (email: string, password: string) => Promise<void | navigateToString>;
     signupCharity: (
         email: string,
         password: string,
@@ -72,11 +68,7 @@ export const createUserSlice: StateCreator<
         // set({ isLoading: false, redirectTo: '/charity-dashboard/manage', user: { email } }, false, "Successfully signed in, redirect to CharityDashboard Manage page");
     },
 
-    signupCharity: async (
-        email: string,
-        password: string,
-        charityName: string
-    ) => {
+    signupCharity: async (email: string, password: string, charityName: string) => {
         set({ isLoading: true });
 
         let error: PostgrestError | AuthError | null = null;
@@ -110,9 +102,7 @@ export const createUserSlice: StateCreator<
             set({ isLoading: true });
 
             // delete previously signed in user if postgrestError occurs
-            ({ data, error } = await supabase.auth.admin.deleteUser(
-                newlyCreatedUserId
-            ));
+            ({ data, error } = await supabase.auth.admin.deleteUser(newlyCreatedUserId));
 
             if (error) {
                 console.error(error);
@@ -147,7 +137,12 @@ export const createUserSlice: StateCreator<
         toast.success('Successfully logged out.');
 
         set(
-            { isLoading: false, authenticatedUser: null },
+            {
+                isLoading: false,
+                authenticatedUser: null,
+                charity: null,
+                events: null,
+            },
             false,
             'Successfully logged out'
         );

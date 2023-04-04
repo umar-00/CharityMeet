@@ -22,7 +22,7 @@ const EventsManagement = (props: Props) => {
     const theme = useTheme();
 
     const user = useStore((state) => state.authenticatedUser);
-    const getEvents = useStore((state) => state.getEvents);
+    const getEvents = useStore((state) => state.getEventsByCharityId);
     const events = useStore((state) => state.events);
 
     useEffect(() => {
@@ -39,14 +39,9 @@ const EventsManagement = (props: Props) => {
 
     useEffect(() => {
         if (events) {
-            console.log(
-                'settings events management list item with new events: ',
-                events
-            );
+            console.log('settings events management list item with new events: ', events);
             setEventsList(
-                events.map((event) => (
-                    <EventsManagementListItem key={event.id} event={event} />
-                ))
+                events.map((event) => <EventsManagementListItem key={event.id} event={event} />)
             );
         }
     }, [events]);
@@ -77,9 +72,7 @@ const EventsManagement = (props: Props) => {
                     />
                 </div>
 
-                <div className="flex flex-col items-center gap-y-12">
-                    {eventsList}
-                </div>
+                <div className="flex flex-col items-center gap-y-12">{eventsList}</div>
             </div>
         </AnimatedMain>
     );

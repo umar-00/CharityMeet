@@ -1,7 +1,18 @@
 export interface Event {
     id: number;
     title: string;
-    address: string;
+    address: EventAddress | null;
+    volunteers_needed: number;
+    description: string;
+    created_at: Date;
+    ends_at: Date;
+    charity_id: string;
+    charity_name: string;
+}
+
+export interface EventToCreate {
+    title: string;
+    address: EventAddress | null;
     volunteers_needed: number;
     description: string;
     created_at: Date;
@@ -9,12 +20,18 @@ export interface Event {
     charity_id: string;
 }
 
-export interface EventToCreateAndUpdate {
+export interface EventToUpdate {
+    id: number;
     title: string;
-    address: string;
+    address: EventAddress | null;
     volunteers_needed: number;
     description: string;
     created_at: Date;
     ends_at: Date;
-    charity_id: string;
+}
+
+export interface EventAddress {
+    description: string;
+    lat: number;
+    lng: number;
 }

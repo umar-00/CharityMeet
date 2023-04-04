@@ -1,6 +1,6 @@
 import React from 'react';
 import './Main.css';
-import GoogleMap from './GoogleMap/GoogleMap';
+import Map from './Map/Map';
 import { useTheme } from '@mui/material';
 
 type Props = {

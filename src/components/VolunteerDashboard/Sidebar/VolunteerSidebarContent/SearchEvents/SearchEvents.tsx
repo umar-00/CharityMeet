@@ -5,6 +5,7 @@ import FilterDialog from './FilterDialog/FilterDialog';
 import SearchIcon from '@mui/icons-material/Search';
 import Badge from '@mui/material/Badge';
 import { useTheme } from '@mui/system';
+import PlacesAutocomplete from '../../../../PlacesAutocomplete/PlacesAutocomplete';
 
 type Props = {};
 
@@ -27,11 +28,12 @@ const SearchEvents = (props: Props) => {
                 className="flex w-full flex-col"
                 style={{ borderColor: theme.palette.text.primary }}
             >
-                <span className="mb-6 px-3 pt-4 opacity-60">Search events</span>
+                <span className="mb-6 px-3 pt-4 opacity-60">Search events by address</span>
 
                 <div className="flex flex-col items-center justify-evenly gap-y-3 px-3 pb-8">
                     <Paper
                         component="form"
+                        onSubmit={(e) => e.preventDefault()}
                         sx={{
                             p: '4px 4px',
                             pr: '8px',
@@ -40,27 +42,14 @@ const SearchEvents = (props: Props) => {
                             width: '100%',
                         }}
                     >
-                        <InputBase
-                            sx={{ ml: 1, flex: 1 }}
-                            placeholder="Enter location"
-                        />
-                        <IconButton
-                            type="button"
-                            sx={{ p: '10px' }}
-                            aria-label="search"
-                        >
+                        <PlacesAutocomplete />
+                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                             <SearchIcon />
                         </IconButton>
 
-                        <Divider
-                            sx={{ height: 28, m: 0.5 }}
-                            orientation="vertical"
-                        />
+                        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
-                        <Tooltip
-                            title="Choose filters for event results"
-                            placement="top"
-                        >
+                        <Tooltip title="Choose filters for event results" placement="top">
                             <IconButton onClick={openFilterDialog}>
                                 <Badge
                                     badgeContent={0}
@@ -78,9 +67,8 @@ const SearchEvents = (props: Props) => {
                     </Paper>
 
                     <span className="text-[12px] opacity-70">
-                        By default, all events within 30km of your chosen
-                        location will be shown below. You may change this
-                        through the filter options.
+                        By default, all events within 1km of your chosen location will be shown
+                        below. You may change this through the filter options.
                     </span>
 
                     <FilterDialog

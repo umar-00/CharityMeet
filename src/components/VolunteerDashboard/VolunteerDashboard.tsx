@@ -5,7 +5,7 @@ import Main from './Main/Main';
 import Sidebar from './Sidebar/Sidebar';
 import './VolunteerDashboard.css';
 import VolunteerSidebarContent from './Sidebar/VolunteerSidebarContent/VolunteerSidebarContent';
-import GoogleMap from './Main/GoogleMap/GoogleMap';
+import Map from './Main/Map/Map';
 
 type props = {
     mode: 'light' | 'dark';
@@ -17,7 +17,7 @@ const VolunteerDashboard = (props: props) => {
         <div className="grid-container-volunteer">
             <Header mode={props.mode} setMode={props.setMode} user={1}></Header>
             <Sidebar sidebarContent={<VolunteerSidebarContent />}></Sidebar>
-            <Main mainContent={<GoogleMap />}></Main>
+            <Main mainContent={<Map />}></Main>
         </div>
     );
 };

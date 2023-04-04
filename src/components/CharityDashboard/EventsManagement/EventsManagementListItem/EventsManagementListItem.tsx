@@ -46,44 +46,32 @@ const EventsManagementListItem = (props: Props) => {
 
             <div className="flex flex-1 flex-col gap-y-4 overflow-auto p-4">
                 <div>
-                    <span className="mr-1 text-lg font-semibold">
-                        Event title:
-                    </span>
+                    <span className="mr-1 text-lg font-semibold">Event title:</span>
                     <span>{props.event.title}</span>
                 </div>
                 <div>
-                    <span className="mr-1 text-lg font-semibold">
-                        Created on:
-                    </span>
-                    <span>
-                        {dayjs(props.event.created_at).format(
-                            'DD MMMM YYYY, HH:mm'
-                        )}
-                    </span>
+                    <span className="mr-1 text-lg font-semibold">Created on:</span>
+                    <span>{dayjs(props.event.created_at).format('DD MMMM YYYY, HH:mm')}</span>
                 </div>
                 <div>
                     <span className="mr-1 text-lg font-semibold">Ends on:</span>
-                    <span>
-                        {dayjs(props.event.ends_at).format(
-                            'DD MMMM YYYY, HH:mm'
-                        )}
-                    </span>
+                    <span>{dayjs(props.event.ends_at).format('DD MMMM YYYY, HH:mm')}</span>
                 </div>
                 <div>
                     <span className="mr-1 text-lg font-semibold">Address:</span>
-                    <span>{props.event.address}</span>
+                    <span>
+                        {props.event.address?.description} {' | Lat: '} {props.event.address?.lat},
+                        {' Lng: '}
+                        {props.event.address?.lng}
+                    </span>
                 </div>
 
                 <div>
-                    <span className="mr-1 text-lg font-semibold">
-                        Volunteers needed:
-                    </span>
+                    <span className="mr-1 text-lg font-semibold">Volunteers needed:</span>
                     <span>{props.event.volunteers_needed}</span>
                 </div>
                 <div>
-                    <span className="mr-1 text-lg font-semibold">
-                        Description:
-                    </span>
+                    <span className="mr-1 text-lg font-semibold">Description:</span>
                     <span>{props.event.description}</span>
                 </div>
             </div>
@@ -107,11 +95,7 @@ const EventsManagementListItem = (props: Props) => {
                     event={props.event}
                 />
 
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    endIcon={<MapIcon />}
-                >
+                <Button variant="outlined" color="primary" endIcon={<MapIcon />}>
                     View on map
                 </Button>
 
