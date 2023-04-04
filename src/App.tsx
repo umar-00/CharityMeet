@@ -17,6 +17,7 @@ import Signup from './components/Login_Signup/Signup';
 import { ToastContainer } from 'react-toastify';
 import { useStore } from './stores/useStore';
 import PrivateRoutes from './components/PrivateRoutes/PrivateRoutes';
+import { useLoadScript } from '@react-google-maps/api';
 
 const darkTheme = createTheme({
     palette: {
@@ -24,8 +25,20 @@ const darkTheme = createTheme({
     },
 });
 
+const googleMapLibrariesToLoad: (
+    | 'places'
+    | 'drawing'
+    | 'geometry'
+    | 'localContext'
+    | 'visualization'
+)[] = ['places'];
+
 function App() {
     const [mode, setMode] = useState<'light' | 'dark'>('dark');
+
+    const { isLoaded } = useLoadScript({
+        libraries: googleMapLibrariesToLoad,
+    });
 
     const getUser = useStore((state) => state.getUserSessionAndCharity);
 
@@ -57,71 +70,54 @@ function App() {
     const location = useLocation();
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <AnimatePresence mode="wait">
-                    <Routes key={location.pathname} location={location}>
-                        <Route
-                            path="/"
-                            element={
-                                <Navigate to="/volunteer-dashboard" replace />
-                            }
-                        />
-                        <Route
-                            path="/volunteer-dashboard"
-                            element={
-                                <VolunteerDashboard
-                                    mode={mode}
-                                    setMode={setMode}
-                                />
-                            }
-                        />
-
-                        <Route element={<PrivateRoutes />}>
-                            <Route
-                                path="/charity-dashboard"
-                                element={
-                                    <CharityDashboard
-                                        mode={mode}
-                                        setMode={setMode}
-                                    />
-                                }
-                            >
+        <>
+            {isLoaded && (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <ThemeProvider theme={theme}>
+                        <CssBaseline />
+                        <AnimatePresence mode="wait">
+                            <Routes key={location.pathname} location={location}>
                                 <Route
-                                    index
-                                    element={
-                                        <Navigate
-                                            to="/charity-dashboard/manage"
-                                            replace
+                                    path="/"
+                                    element={<Navigate to="/volunteer-dashboard" replace />}
+                                />
+                                <Route
+                                    path="/volunteer-dashboard"
+                                    element={<VolunteerDashboard mode={mode} setMode={setMode} />}
+                                />
+
+                                <Route element={<PrivateRoutes />}>
+                                    <Route
+                                        path="/charity-dashboard"
+                                        element={<CharityDashboard mode={mode} setMode={setMode} />}
+                                    >
+                                        <Route
+                                            index
+                                            element={
+                                                <Navigate to="/charity-dashboard/manage" replace />
+                                            }
                                         />
-                                    }
-                                />
-                                <Route
-                                    path="manage"
-                                    element={<EventsManagement />}
-                                />
-                                <Route
-                                    path="map-view"
-                                    element={<ViewEventsOnMap />}
-                                />
-                            </Route>
-                        </Route>
+                                        <Route path="manage" element={<EventsManagement />} />
+                                        <Route path="map-view" element={<ViewEventsOnMap />} />
+                                    </Route>
+                                </Route>
 
-                        <Route
-                            path="/login"
-                            element={<Login mode={mode} setMode={setMode} />}
-                        />
-                        <Route
-                            path="/signup"
-                            element={<Signup mode={mode} setMode={setMode} />}
-                        />
-                        <Route path="*" element={<Error />} />
-                    </Routes>
-                </AnimatePresence>
-                <ToastContainer position="bottom-right" />
-            </ThemeProvider>
-        </LocalizationProvider>
+                                <Route
+                                    path="/login"
+                                    element={<Login mode={mode} setMode={setMode} />}
+                                />
+                                <Route
+                                    path="/signup"
+                                    element={<Signup mode={mode} setMode={setMode} />}
+                                />
+                                <Route path="*" element={<Error />} />
+                            </Routes>
+                        </AnimatePresence>
+                        <ToastContainer position="bottom-right" />
+                    </ThemeProvider>
+                </LocalizationProvider>
+            )}
+        </>
     );
 }
 
