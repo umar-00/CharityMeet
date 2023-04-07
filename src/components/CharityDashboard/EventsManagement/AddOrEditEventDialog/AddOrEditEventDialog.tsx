@@ -216,6 +216,7 @@ const AddOrEditEventDialog = (props: Props) => {
             const eventToInsert: EventToCreate = {
                 address: address ?? null,
                 charity_id: user?.user_id!,
+                charity_name: useStore.getState().charity?.name!,
                 description: data.eventDescription,
                 title: data.eventTitle,
                 created_at: data.createdOn.toDate(),
