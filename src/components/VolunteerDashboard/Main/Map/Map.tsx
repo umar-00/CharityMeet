@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTheme } from '@mui/system';
-import { GoogleMap, Circle } from '@react-google-maps/api';
+import { GoogleMap, Circle, MarkerClusterer } from '@react-google-maps/api';
 import { useStore } from '../../../../stores/useStore';
 import EventMarker from './EventMarker/EventMarker';
 import InfoBox from './InfoWindow/InfoBox';
@@ -57,7 +57,7 @@ function Map({}: Props) {
     return (
         <>
             <GoogleMap
-                zoom={16}
+                zoom={14}
                 center={center}
                 mapContainerStyle={{ width: '100%', height: '100%' }}
                 options={{
@@ -65,29 +65,48 @@ function Map({}: Props) {
                 }}
                 onLoad={onLoad}
             >
-                <div className="relative">
-                    {events?.map((event): JSX.Element => {
-                        return (
-                            <EventMarker
-                                event={event}
-                                key={event.id}
-                                openInfoBox={openInfoBox}
-                                setOpenInfoBox={setOpenInfoBox}
-                            />
-                        );
-                    })}
-                    {openInfoBox && (
-                        <InfoBox
-                            event={events?.find((e) => e.id === openInfoBox.eventId)}
+                {/* <MarkerClusterer>
+                    {clusterer => }
+                </MarkerClusterer> */}
+
+                {events?.map((event): JSX.Element => {
+                    return (
+                        <EventMarker
+                            event={event}
+                            key={event.id}
+                            openInfoBox={openInfoBox}
                             setOpenInfoBox={setOpenInfoBox}
                         />
-                    )}
-                </div>
+                    );
+                })}
+                {openInfoBox && (
+                    <InfoBox
+                        event={events?.find((e) => e.id === openInfoBox.eventId)}
+                        setOpenInfoBox={setOpenInfoBox}
+                    />
+                )}
 
-                {/* <Circle center={center} radius={1000} /> */}
+                <Circle center={center} radius={1000} options={closeOptions} />
             </GoogleMap>
         </>
     );
 }
 
 export default Map;
+
+// ---------- GoogleMap Circle options ----------
+const defaultOptions = {
+    strokeOpacity: 0.5,
+    strokeWeight: 2,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+};
+const closeOptions = {
+    ...defaultOptions,
+    zIndex: 3,
+    fillOpacity: 0.05,
+    strokeColor: '#8BC34A',
+    fillColor: '#8BC34A',
+};
