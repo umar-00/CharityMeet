@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTheme } from '@mui/system';
 import { GoogleMap, Circle } from '@react-google-maps/api';
 import { useStore } from '../../../../stores/useStore';
@@ -15,7 +15,16 @@ type Props = {};
 function Map({}: Props) {
     const theme = useTheme();
 
-    const [center, setCenter] = useState({ lat: 53.166666, lng: 8.6499974 });
+    const mapRef = useRef<google.maps.Map>();
+
+    const center = useMemo<google.maps.LatLngLiteral>(
+        () => ({ lat: 53.166666, lng: 8.6499974 }),
+        []
+    );
+
+    const onLoad = useCallback((map: google.maps.Map) => {
+        mapRef.current = map;
+    }, []);
 
     const [openInfoBox, setOpenInfoBox] = useState<OpenInfoBox>({ isOpen: false });
 
@@ -38,7 +47,10 @@ function Map({}: Props) {
         console.log('useEffect, new currentlySelectedEvent:', currentlySelectedEvent);
 
         if (currentlySelectedEvent) {
-            setCenter({ lat: currentlySelectedEvent.lat, lng: currentlySelectedEvent.lng });
+            mapRef.current?.panTo({
+                lat: currentlySelectedEvent.lat,
+                lng: currentlySelectedEvent.lng,
+            });
         }
     }, [currentlySelectedEvent]);
 
@@ -51,6 +63,7 @@ function Map({}: Props) {
                 options={{
                     mapId: `${theme.palette.mode === 'dark' ? 'f0f023e3616c652c' : ''}`,
                 }}
+                onLoad={onLoad}
             >
                 <div className="relative">
                     {events?.map((event): JSX.Element => {
