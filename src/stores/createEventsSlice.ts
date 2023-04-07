@@ -8,11 +8,15 @@ export interface EventsSlice {
     events: Event[] | null,
     isLoading: boolean,
     error: string | null,
+    currentlySelectedEvent: { id: number, lat: number, lng: number } | null,
+
     getEventsByCharityId: (charity_id: string) => Promise<Event[] | null>,
     getAllEvents: () => Promise<Event[] | null>,
     addEvent: (event: EventToCreate) => Promise<void>,
     updateEvent: (event: EventToUpdate, eventId: number) => Promise<void>,
     deleteEvent: (eventId: number) => Promise<void>,
+    setCurrentlySelectedEvent: (id: number, lat: number, lng: number) => void;
+    removeCurrentlySelectedEvent: () => void;
 };
 
 export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", never]], [], EventsSlice> = (set, get) => ({
@@ -21,6 +25,8 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
     isLoading: false,
 
     error: null,
+
+    currentlySelectedEvent: null,
 
     getEventsByCharityId: async (charity_id: string) => {
         set({ isLoading: true });
@@ -199,5 +205,17 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
         toast.success('Event successfully deleted.');
 
         return;
+    },
+
+    setCurrentlySelectedEvent: (id, lat, lng) => {
+        set({
+            currentlySelectedEvent: { id, lat, lng }
+        });
+    },
+
+    removeCurrentlySelectedEvent: () => {
+        set({
+            currentlySelectedEvent: null
+        });
     }
 });

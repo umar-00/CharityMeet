@@ -15,11 +15,11 @@ type Props = {};
 function Map({}: Props) {
     const theme = useTheme();
 
+    const [center, setCenter] = useState({ lat: 53.166666, lng: 8.6499974 });
+
     const [openInfoBox, setOpenInfoBox] = useState<OpenInfoBox>({ isOpen: false });
 
-    const [eventMarkers, setEventMarkers] = useState<JSX.Element[]>();
-
-    const center = useMemo(() => ({ lat: 53.166666, lng: 8.6499974 }), []);
+    const currentlySelectedEvent = useStore((state) => state.currentlySelectedEvent);
 
     const events = useStore((state) => state.events);
 
@@ -33,6 +33,14 @@ function Map({}: Props) {
     useEffect(() => {
         console.log('useEffect, openInfoBox change: ', openInfoBox);
     }, [openInfoBox]);
+
+    useEffect(() => {
+        console.log('useEffect, new currentlySelectedEvent:', currentlySelectedEvent);
+
+        if (currentlySelectedEvent) {
+            setCenter({ lat: currentlySelectedEvent.lat, lng: currentlySelectedEvent.lng });
+        }
+    }, [currentlySelectedEvent]);
 
     return (
         <>
