@@ -213,10 +213,18 @@ const AddOrEditEventDialog = (props: Props) => {
 
             await updateEvent(eventToUpdate, props.event?.id!);
         } else if (props.addOrEditString === 'Add') {
+            const charity_name = useStore.getState().charity?.name;
+
+            if (!charity_name) {
+                toast.error('Charity name not found during event creation.');
+                console.error('Charity name not found during event creation.');
+                return;
+            }
+
             const eventToInsert: EventToCreate = {
                 address: address ?? null,
                 charity_id: user?.user_id!,
-                charity_name: useStore.getState().charity?.name!,
+                charity_name,
                 description: data.eventDescription,
                 title: data.eventTitle,
                 created_at: data.createdOn.toDate(),
