@@ -85,6 +85,10 @@ function App() {
                                     path="/volunteer-dashboard"
                                     element={<VolunteerDashboard mode={mode} setMode={setMode} />}
                                 />
+                                <Route
+                                    path="/volunteer-dashboard/:eventId"
+                                    element={<VolunteerDashboard mode={mode} setMode={setMode} />}
+                                />
 
                                 <Route element={<PrivateRoutes />}>
                                     <Route

@@ -27,7 +27,7 @@ function Map({}: Props) {
     }, [currentlySelectedAddress]);
 
     const onLoad = useCallback((map: google.maps.Map) => {
-        console.log('on map load, setting mapRef');
+        // console.log('on map load, setting mapRef');
         mapRef.current = map;
     }, []);
 
@@ -45,9 +45,9 @@ function Map({}: Props) {
                 lng: currentlySelectedEvent.lng,
             });
 
-            if (mapRef.current?.getZoom() !== 15) {
+            if (mapRef.current?.getZoom() !== 17) {
                 // console.log('zooming in, mapRef.current?.getZoom(): ', mapRef.current?.getZoom());
-                mapRef.current?.setZoom(15);
+                mapRef.current?.setZoom(17);
             }
         }
     };
@@ -61,8 +61,8 @@ function Map({}: Props) {
     };
 
     const setZoomBasedOnSearchRadius = () => {
-        console.log('setZoomBasedOnSearchRadius, mapRef.current: ', mapRef.current);
-        console.log('setZoomBasedOnSearchRadius, current zoom: ', mapRef.current?.getZoom());
+        // console.log('setZoomBasedOnSearchRadius, mapRef.current: ', mapRef.current);
+        // console.log('setZoomBasedOnSearchRadius, current zoom: ', mapRef.current?.getZoom());
         let newZoomVal: number = Google_Map_Default_Zoom;
         const searchRadiusInKiloMeters = searchRadiusInMeters / 1000;
 

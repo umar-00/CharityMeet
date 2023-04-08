@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Event } from '../../../../../interfaces/Event';
 import { OpenInfoBox } from '../Map';
 import { useStore } from '../../../../../stores/useStore';
+import { useSearchParams } from 'react-router-dom';
 
 type Props = {
     event: Event | undefined;
@@ -14,10 +15,15 @@ const InfoBox = (props: Props) => {
 
     const removeCurrentlySelectedEvent = useStore((state) => state.removeCurrentlySelectedEvent);
 
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const onCloseIconButtonClick = () => {
         props.setOpenInfoBox({ isOpen: false });
         removeCurrentlySelectedEvent();
-        console.log('onCloseIconButtonClick setOpenInfoBox set to false');
+        setSearchParams({});
+        console.log(
+            'onCloseIconButtonClick setOpenInfoBox set to false, and clearing setSearchParams'
+        );
     };
 
     if (!props.event) return null;

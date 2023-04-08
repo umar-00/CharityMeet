@@ -20,7 +20,7 @@ export interface EventsSlice {
     addEvent: (event: EventToCreate) => Promise<void>,
     updateEvent: (event: EventToUpdate, eventId: number) => Promise<void>,
     deleteEvent: (eventId: number) => Promise<void>,
-    setCurrentlySelectedEvent: (id: number, lat: number, lng: number) => void;
+    setCurrentlySelectedEvent: (eventId: number, lat: number, lng: number) => void;
     removeCurrentlySelectedEvent: () => void;
     // setSingleEventDistanceFromAddress: (eventId: number) => void;
     setAllEventsDistanceFromAddress: () => void;
@@ -231,9 +231,17 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
         return;
     },
 
-    setCurrentlySelectedEvent: (id, lat, lng) => {
+    setCurrentlySelectedEvent: (eventId, lat, lng) => {
+
+        console.log('from setCurrentlySelectedEvent: ', { newEventId: eventId, idAlreadyInState: get().currentlySelectedEvent?.id })
+
+        // Needed to add this to prevent currentlySelectedEvent from being set twice, once due to a click on an event (listItem or Google Map Marker) and the second time due to a useEffect being triggered in VolunteerDashboard component due to change in searchParams which then also tries to change this state property.
+        if (get().currentlySelectedEvent?.id === eventId) {
+            return;
+        }
+
         set({
-            currentlySelectedEvent: { id, lat, lng }
+            currentlySelectedEvent: { id: eventId, lat, lng }
         }, false, "Set Currently Selected Event");
     },
 
