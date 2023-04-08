@@ -16,7 +16,9 @@ export interface UserSlice {
     signupCharity: (
         email: string,
         password: string,
-        charityName: string
+        charityName: string,
+        contactEmail: string,
+        contactPhone: string
     ) => Promise<void | navigateToString>;
     signout: () => Promise<void | navigateToString>;
     getUserSessionAndCharity: () => Promise<void | navigateToString>;
@@ -68,7 +70,7 @@ export const createUserSlice: StateCreator<
         // set({ isLoading: false, redirectTo: '/charity-dashboard/manage', user: { email } }, false, "Successfully signed in, redirect to CharityDashboard Manage page");
     },
 
-    signupCharity: async (email: string, password: string, charityName: string) => {
+    signupCharity: async (email: string, password: string, charityName: string, contactEmail: string, contactPhone: string) => {
         set({ isLoading: true });
 
         let error: PostgrestError | AuthError | null = null;
@@ -85,15 +87,21 @@ export const createUserSlice: StateCreator<
 
         let newlyCreatedUserId: string = data.user?.id!;
 
-        const charityUpdate: CharityToCreate = {
+        console.log('newlyCreatedUserId: ', newlyCreatedUserId);
+
+        const charityToCreate: CharityToCreate = {
             name: charityName,
             is_verified: true,
             user_id: newlyCreatedUserId,
+            contact_email: contactEmail,
+            contact_phone: contactPhone,
         };
 
-        console.log('charityUpdate: ', charityUpdate);
+        console.log('charityToCreate: ', charityToCreate);
 
-        ({ error } = await supabase.from('charities').insert(charityUpdate));
+        ({ data, error } = await supabase.from('charities').insert(charityToCreate).select());
+
+        console.log('after inserting charity, data: ', data);
 
         if (error) {
             console.error(error);
@@ -201,7 +209,7 @@ export const createUserSlice: StateCreator<
 
         ({ data, error } = await supabase
             .from('charities')
-            .select(`name, is_verified, user_id`)
+            .select(`name, is_verified, user_id, contact_email, contact_phone`)
             .eq('user_id', data.session.user.id)
             .single());
 
@@ -211,6 +219,8 @@ export const createUserSlice: StateCreator<
                 charity: {
                     is_verified: data?.is_verified,
                     name: data?.name,
+                    contact_email: data?.contact_email,
+                    contact_phone: data?.contact_phone
                 },
             },
             false,
