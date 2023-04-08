@@ -1,25 +1,39 @@
 import { Divider, IconButton, InputBase, Paper, Tooltip } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import FilterDialog from './FilterDialog/FilterDialog';
 import SearchIcon from '@mui/icons-material/Search';
 import Badge from '@mui/material/Badge';
 import { useTheme } from '@mui/system';
 import PlacesAutocomplete from '../../../../PlacesAutocomplete/PlacesAutocomplete';
+import { useStore } from '../../../../../stores/useStore';
 
 type Props = {};
 
 const SearchEvents = (props: Props) => {
     const [openDialog, setOpenDialog] = useState(false);
 
+    const searchRadiusInMeters = useStore((state) => state.searchRadiusInMeters);
+
+    const filterBtnRef = useRef<HTMLButtonElement>(null);
+
     const theme = useTheme();
 
     const openFilterDialog = () => {
+        console.log('openDialog setting to true');
         setOpenDialog(true);
     };
 
     const closeFilterDialog = () => {
         setOpenDialog(false);
+    };
+
+    /*Fixes issue where if we press 'enter' key from inside radius slider to call the closeFilterDialog
+     the filterBtnRef's button would be focused and would again open the dialog */
+    const handleOnFocusCapture = (event: React.FocusEvent<HTMLButtonElement, Element>) => {
+        // console.log('handleOnFocusCapture, ref: ', filterBtnRef.current);
+
+        filterBtnRef.current?.blur();
     };
 
     return (
@@ -36,23 +50,29 @@ const SearchEvents = (props: Props) => {
                         onSubmit={(e) => e.preventDefault()}
                         sx={{
                             p: '4px 4px',
-                            pr: '8px',
+                            pr: '4px',
                             display: 'flex',
                             alignItems: 'center',
+                            justifyContent: 'space-between',
                             width: '100%',
                         }}
                     >
                         <PlacesAutocomplete />
-                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                        {/* <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                             <SearchIcon />
-                        </IconButton>
+                        </IconButton> */}
 
-                        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                        <Divider sx={{ height: 28, m: 0.5, ml: 3 }} orientation="vertical" />
 
-                        <Tooltip title="Choose filters for event results" placement="top">
-                            <IconButton onClick={openFilterDialog}>
+                        <Tooltip title="Search radius in kilometers" placement="top">
+                            <IconButton
+                                onClick={openFilterDialog}
+                                ref={filterBtnRef}
+                                onFocusCapture={handleOnFocusCapture}
+                            >
                                 <Badge
-                                    badgeContent={0}
+                                    // badgeContent={searchRadiusInMeters === 1000 ? 0 : 1}
+                                    badgeContent={searchRadiusInMeters / 1000}
                                     showZero
                                     color="secondary"
                                     anchorOrigin={{
@@ -67,8 +87,11 @@ const SearchEvents = (props: Props) => {
                     </Paper>
 
                     <span className="text-[12px] opacity-70">
-                        By default, all events within 1km of your chosen location will be shown
-                        below. You may change this through the filter options.
+                        By default, all events within 10km of your chosen location will be shown
+                        below. Click on the filter button to change this.
+                        {/* By default, all events within 10km of your chosen location will be shown
+                        below. You may change this by clicking on the filter button - to the left of
+                        the search address input. */}
                     </span>
 
                     <FilterDialog

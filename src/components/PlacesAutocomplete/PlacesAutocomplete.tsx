@@ -3,8 +3,9 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 import { UseFormRegister, UseFormRegisterReturn } from 'react-hook-form';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 import { EventAddress } from '../../interfaces/Event';
+import { useStore } from '../../stores/useStore';
 
-type placeOption = {
+type PlaceOption = {
     place_id: string;
     description: string;
 };
@@ -29,6 +30,10 @@ type Props = {
 const PlacesAutocomplete = (props: Props) => {
     const customTextField = props.customTextField!;
 
+    const currentlySelectedAddress = useStore((state) => state.currentlySelectedAddress);
+
+    const setCurrentlySelectedAddress = useStore((state) => state.setCurrentlySelectedAddress);
+
     const {
         ready,
         value,
@@ -39,13 +44,13 @@ const PlacesAutocomplete = (props: Props) => {
         debounce: 400,
     });
 
-    const [placeOptions, setPlaceOptions] = useState<placeOption[]>([]);
+    const [placeOptions, setPlaceOptions] = useState<PlaceOption[]>([]);
 
     const handlePlaceSelect = async (
         e: React.SyntheticEvent<Element, Event>,
-        newValue: NonNullable<string | placeOption>
+        newValue: NonNullable<string | PlaceOption>
     ) => {
-        const address = newValue as placeOption;
+        const address = newValue as PlaceOption;
         console.log('handlePlaceSelect, onChange: ', address.description);
 
         clearSuggestions();
@@ -55,6 +60,8 @@ const PlacesAutocomplete = (props: Props) => {
 
         if (customTextField) {
             customTextField.setAddress({ description: address.description, lat, lng });
+        } else {
+            setCurrentlySelectedAddress({ description: address.description, lat, lng });
         }
 
         console.log('handlePlaceSelect', { results, lat, lng });
@@ -63,14 +70,18 @@ const PlacesAutocomplete = (props: Props) => {
     // Sets initial value in Autocomplete
     useLayoutEffect(() => {
         if (customTextField && customTextField.initialAutoCompleteValue) {
-            console.log('on placesAutocomplete mount: ', { value });
+            // console.log('on placesAutocomplete mount: ', { value });
             setValue(customTextField.initialAutoCompleteValue);
+        }
+
+        if (!customTextField) {
+            setValue(currentlySelectedAddress.description);
         }
     }, []);
 
     useEffect(() => {
         if (status === 'OK') {
-            console.log('useEffect triggered, ', { value, data });
+            // console.log('useEffect triggered, ', { value, data });
 
             // Required because sometimes (possibly due to a bug?) data can be undefined, leading to placeOptions state being undefined, leading to app crash
             if (data) {
@@ -80,7 +91,7 @@ const PlacesAutocomplete = (props: Props) => {
                             ({
                                 place_id: place.place_id,
                                 description: place.description,
-                            } as placeOption)
+                            } as PlaceOption)
                     )
                 );
             }
@@ -133,7 +144,7 @@ const PlacesAutocomplete = (props: Props) => {
                                 <InputBase
                                     {...params.InputProps}
                                     {...rest}
-                                    sx={{ ml: 1, flex: 1 }}
+                                    sx={{ ml: 1, flex: 1, mr: 10 }}
                                     placeholder="Enter address"
                                     onChange={(event) => {
                                         setValue(event.target.value);

@@ -1,16 +1,13 @@
-import { useTheme } from '@mui/material';
+import { Chip, useTheme } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { EventAddress } from '../../../../../../interfaces/Event';
+import { Event, EventAddress } from '../../../../../../interfaces/Event';
 import { useStore } from '../../../../../../stores/useStore';
 import React from 'react';
+import dayjs from 'dayjs';
 
 type Props = {
-    eventId: number;
-    address: EventAddress;
-    charityName: string;
-    title: string;
-    createdAt: string;
     customRef: React.RefObject<HTMLDivElement> | null;
+    event: Event;
 };
 
 export default function EventListItem(props: Props) {
@@ -20,19 +17,13 @@ export default function EventListItem(props: Props) {
 
     const currentlySelectedEvent = useStore((state) => state.currentlySelectedEvent);
 
-    // const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    //     // console.log('mouse enter, title: ', props.title);
-    //     setCurrentlySelectedEvent(props.eventId, props.address.lat, props.address.lng);
-    // };
-
-    // const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    //     // console.log('mouse leave, title: ', props.title);
-    //     removeCurrentlySelectedEvent();
-    // };
-
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        console.log('handleClick, title: ', props.title);
-        setCurrentlySelectedEvent(props.eventId, props.address.lat, props.address.lng);
+        console.log('handleClick, title: ', props.event.title);
+        setCurrentlySelectedEvent(
+            props.event.id,
+            props.event.address?.lat!,
+            props.event.address?.lng!
+        );
     };
 
     const hoverColor = () => {
@@ -44,26 +35,31 @@ export default function EventListItem(props: Props) {
     return (
         <>
             <div
-                // onMouseEnter={handleMouseEnter}
-                // onMouseLeave={handleMouseLeave}
                 onClick={handleClick}
                 className={` hover: flex h-fit cursor-pointer flex-col border-x-0 border-b-0 p-3 transition-colors [&:nth-child(1)]:border-t-0
-                ${currentlySelectedEvent?.id === props.eventId ? hoverColor() : ''}`}
+                ${currentlySelectedEvent?.id === props.event.id ? hoverColor() : ''}`}
                 style={{
                     borderColor: theme.palette.text.primary,
-                    // backgroundColor: blue[600],
-                    // opacity: 0.8,
                 }}
                 ref={props.customRef}
             >
-                <span className="text-lg font-bold">Title: {props.title}</span>
-                <span className="text-lg">Charity name: {props.charityName}</span>
-                <span className="text-lg">Address: {props.address.description}</span>
-                <span className="text-lg">Created at: {props.createdAt}</span>
+                <span className="text-lg font-bold">Title: {props.event.title}</span>
 
-                {/* <span className="text-xl font-bold">Event XYZ</span>
-                <span className="text-lg">Distance: 9.4 kilometres</span>
-                <span className="text-lg">Address: College Ring 4</span> */}
+                <span className="text-lg">
+                    Distance from address:{' '}
+                    <Chip
+                        color="success"
+                        label={props.event.distanceToAddressInKiloMeters?.toFixed(2) + ' km'}
+                    />
+                    {/* {props.event.distanceToAddressInKiloMeters?.toFixed(2)}{' '}
+                    km */}
+                </span>
+
+                <span className="text-lg">Charity name: {props.event.charity_name}</span>
+                <span className="text-lg">Address: {props.event.address?.description}</span>
+                <span className="text-lg">
+                    Created at: {dayjs(props.event.created_at).format('DD MMMM YYYY, HH:mm')}
+                </span>
             </div>
             <Divider />
         </>

@@ -1,32 +1,52 @@
 import { StateCreator } from 'zustand'
 import { StoreState } from './storeState';
-import { Event, EventToCreate, EventToUpdate } from '../interfaces/Event';
+import { Event, EventToCreate, EventToUpdate, EventAddress } from '../interfaces/Event';
 import { supabase } from '../supabase/supabaseClient';
 import { toast } from 'react-toastify';
+import { Google_Map_Default_Center } from '../components/VolunteerDashboard/Main/Map/Map';
+import { distanceBetweenTwoPointsInKm } from '../utils/calculateDistanceBetweenTwoPoints';
 
 export interface EventsSlice {
     events: Event[] | null,
+    filteredEvents: Event[] | null,
     isLoading: boolean,
     error: string | null,
     currentlySelectedEvent: { id: number, lat: number, lng: number } | null,
+    currentlySelectedAddress: EventAddress,
+    searchRadiusInMeters: number,
 
     getEventsByCharityId: (charity_id: string) => Promise<Event[] | null>,
-    getAllEvents: () => Promise<Event[] | null>,
+    getAllEvents: () => Promise<void>,
     addEvent: (event: EventToCreate) => Promise<void>,
     updateEvent: (event: EventToUpdate, eventId: number) => Promise<void>,
     deleteEvent: (eventId: number) => Promise<void>,
     setCurrentlySelectedEvent: (id: number, lat: number, lng: number) => void;
     removeCurrentlySelectedEvent: () => void;
+    // setSingleEventDistanceFromAddress: (eventId: number) => void;
+    setAllEventsDistanceFromAddress: () => void;
+    setCurrentlySelectedAddress: (newAddress: EventAddress) => void;
+    setSearchRadiusInMeters: (newDistanceInMeters: number) => void;
+    setFilteredEventsWithinSearchRadius: () => void;
 };
 
 export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", never]], [], EventsSlice> = (set, get) => ({
     events: null,
 
+    filteredEvents: null,
+
     isLoading: false,
 
     error: null,
 
+    currentlySelectedAddress: {
+        description: "Constructor University, Campus Ring, Bremen, Germany",
+        lat: 53.1670277,
+        lng: 8.6516237
+    },
+
     currentlySelectedEvent: null,
+
+    searchRadiusInMeters: 10000,
 
     getEventsByCharityId: async (charity_id: string) => {
         set({ isLoading: true });
@@ -48,7 +68,7 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
             return null;
         }
 
-        console.log('events fetched: ', data);
+        // console.log('events fetched: ', data);
 
         set({
             isLoading: false,
@@ -74,17 +94,21 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
             toast.error(error.message);
 
             set({ isLoading: false });
-            return null;
+            return;
         }
 
-        console.log('events fetched: ', data);
+        // console.log('events fetched: ', data);
 
         set({
             isLoading: false,
             events: data
         }, false, "Events successfully fetched");
 
-        return data;
+        get().setAllEventsDistanceFromAddress();
+
+        get().setFilteredEventsWithinSearchRadius();
+
+        return;
     },
 
     addEvent: async (event) => {
@@ -210,12 +234,110 @@ export const createEventsSlice: StateCreator<StoreState, [["zustand/devtools", n
     setCurrentlySelectedEvent: (id, lat, lng) => {
         set({
             currentlySelectedEvent: { id, lat, lng }
-        });
+        }, false, "Set Currently Selected Event");
     },
 
     removeCurrentlySelectedEvent: () => {
         set({
             currentlySelectedEvent: null
+        }, false, "Remove Currently Selected Event");
+    },
+
+    // setSingleEventDistanceFromAddress: (eventId: number) => {
+    //     let addressCoordinates: google.maps.LatLngLiteral;
+    //     let address = get().currentlySelectedAddress;
+
+    //     if (get().currentlySelectedAddress) {
+    //         addressCoordinates = {
+    //             lat: address?.lat!,
+    //             lng: address?.lng!
+    //         }
+    //     }
+    //     else {
+    //         addressCoordinates = Google_Map_Default_Center;
+    //     }
+
+    //     const eventToUpdate = get().events?.find(event => event.id === eventId);
+
+    //     let distance = distanceBetweenTwoPointsInKm(addressCoordinates, {
+    //         lat: eventToUpdate?.address?.lat!,
+    //         lng: eventToUpdate?.address?.lng!,
+    //     });
+
+    //     console.log('setEventDistanceFromAddress: ', { addressCoordinates, eventToUpdate });
+
+    //     const updatedEvents = get().events?.map(event => {
+    //         if (event.id === eventId) {
+    //             return {
+    //                 ...event,
+    //                 distanceToAddressInKiloMeters: distance
+    //             }
+    //         }
+    //         else return event
+    //     });
+
+
+    //     set({
+    //         events: updatedEvents
+    //     }, false, "Set Event Distance From Address");
+    // },
+
+    setAllEventsDistanceFromAddress: () => {
+        let addressCoordinates: google.maps.LatLngLiteral;
+        let address = get().currentlySelectedAddress;
+
+        if (get().currentlySelectedAddress) {
+            addressCoordinates = {
+                lat: address?.lat!,
+                lng: address?.lng!
+            }
+        }
+        else {
+            addressCoordinates = Google_Map_Default_Center;
+        }
+
+        // console.log('setEventDistanceFromAddress, address: ', address);
+
+        const updatedEvents = get().events?.map(event => {
+            return {
+                ...event,
+                distanceToAddressInKiloMeters: distanceBetweenTwoPointsInKm(addressCoordinates, {
+                    lat: event.address?.lat!,
+                    lng: event.address?.lng!,
+                })
+            }
         });
+
+
+        set({
+            events: updatedEvents
+        }, false, "Set All Event's Distance From Address");
+    },
+
+    setCurrentlySelectedAddress: (newAddress) => {
+        set({
+            currentlySelectedAddress: newAddress
+        }, false, "Set Currently Selected Address");
+
+        get().setAllEventsDistanceFromAddress();
+        get().setFilteredEventsWithinSearchRadius();
+    },
+
+    setSearchRadiusInMeters: (newDistanceInMeters) => {
+        set({
+            searchRadiusInMeters: newDistanceInMeters
+        }, false, "Set Search Radius In Meters");
+
+        get().setFilteredEventsWithinSearchRadius();
+    },
+
+    setFilteredEventsWithinSearchRadius: () => {
+        const filteredEvents = get().events?.filter(event => event.distanceToAddressInKiloMeters! < (get().searchRadiusInMeters / 1000));
+
+        // console.log('filtered events: ', filteredEvents);
+
+        set({
+            filteredEvents
+        }, false, "Set Filtered Events Within Search Radius");
     }
 });

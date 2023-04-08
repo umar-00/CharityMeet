@@ -8,6 +8,7 @@ type Props = {
     event: Event;
     openInfoBox: OpenInfoBox;
     setOpenInfoBox: React.Dispatch<React.SetStateAction<OpenInfoBox>>;
+    clusterer: any;
 };
 
 const EventMarker = (props: Props) => {
@@ -37,6 +38,7 @@ const EventMarker = (props: Props) => {
     return (
         <>
             <Marker
+                clusterer={props.clusterer}
                 position={{
                     lat: props.event.address?.lat!,
                     lng: props.event.address?.lng!,

@@ -195,7 +195,7 @@ export const createUserSlice: StateCreator<
             false,
             'User session successfully fetched'
         );
-        console.log('getUserSessionAndCharity, auth_user: ', { data, error });
+        // console.log('getUserSessionAndCharity, auth_user: ', { data, error });
 
         set({ isLoading: true });
 
@@ -217,7 +217,7 @@ export const createUserSlice: StateCreator<
             'Charity successfully fetched'
         );
 
-        console.log('getUserSessionAndCharity, charity: ', { data, error });
+        // console.log('getUserSessionAndCharity, charity: ', { data, error });
 
         return;
     },

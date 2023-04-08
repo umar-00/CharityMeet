@@ -1,34 +1,40 @@
-import React, { createRef, useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import SortEventsButton from './SortEventsButton/SortEventsButton';
 import EventListItem from './EventListItem/EventListItem';
 import { useStore } from '../../../../../stores/useStore';
-import dayjs from 'dayjs';
 import { Event } from '../../../../../interfaces/Event';
 
-export type SortBy = 'Event title' | 'Creation date';
+export type SortBy = 'Event title' | 'Creation date' | 'Distance from address';
+
+export const Default_Sort_By: SortBy = 'Distance from address';
 
 type Props = {};
 
 const EventsList = (props: Props) => {
-    const [sortBy, setSortBy] = useState<SortBy>('Event title');
+    const [sortBy, setSortBy] = useState<SortBy>(Default_Sort_By);
 
-    const events = useStore((state) => state.events);
+    const filteredEvents = useStore((state) => state.filteredEvents);
 
     const currentlySelectedEvent = useStore((state) => state.currentlySelectedEvent);
 
-    const listItemRef = createRef<HTMLDivElement>();
+    const listItemRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         listItemRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [currentlySelectedEvent]);
 
-    useEffect(() => {
-        console.log('useEffect, new sortby: ', sortBy);
-    }, [sortBy]);
+    const chooseSortingFunc = useMemo(() => {
+        // console.log('calling chooseSortingFunc');
 
-    const sortByTitle = (a: Event, b: Event) => a.title.localeCompare(b.title);
-    const sortByCreationDate = (a: Event, b: Event) =>
-        (a.created_at as unknown as string).localeCompare(b.created_at as unknown as string);
+        switch (sortBy) {
+            case 'Event title':
+                return sortByTitle;
+            case 'Creation date':
+                return sortByCreationDate;
+            case 'Distance from address':
+                return sortByDistance;
+        }
+    }, [sortBy]);
 
     return (
         <div className="flex w-full flex-col overflow-y-auto">
@@ -37,21 +43,23 @@ const EventsList = (props: Props) => {
                 <SortEventsButton sortBy={sortBy} setSortBy={setSortBy}></SortEventsButton>
             </div>
 
-            {events
-                ?.sort(sortBy === 'Event title' ? sortByTitle : sortByCreationDate)
-                .map((event) => (
-                    <EventListItem
-                        key={event.id}
-                        address={event.address!}
-                        charityName={event.charity_name}
-                        createdAt={dayjs(event.created_at).format('DD MMMM YYYY, HH:mm')}
-                        title={event.title}
-                        eventId={event.id}
-                        customRef={currentlySelectedEvent?.id === event.id ? listItemRef : null}
-                    />
-                ))}
+            {filteredEvents?.sort(chooseSortingFunc).map((event) => (
+                <EventListItem
+                    key={event.id}
+                    event={event}
+                    customRef={currentlySelectedEvent?.id === event.id ? listItemRef : null}
+                />
+            ))}
         </div>
     );
 };
 
 export default EventsList;
+
+const sortByTitle = (a: Event, b: Event) => a.title.localeCompare(b.title);
+
+const sortByCreationDate = (a: Event, b: Event) =>
+    (a.created_at as unknown as string).localeCompare(b.created_at as unknown as string);
+
+const sortByDistance = (a: Event, b: Event) =>
+    a.distanceToAddressInKiloMeters! - b.distanceToAddressInKiloMeters!;

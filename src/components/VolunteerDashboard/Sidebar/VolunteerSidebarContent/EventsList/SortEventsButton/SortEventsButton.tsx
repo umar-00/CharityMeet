@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import SortIcon from '@mui/icons-material/Sort';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { SortByAlpha, ArrowUpward, SocialDistance, DateRange } from '@mui/icons-material';
-import { SortBy } from '../EventsList';
+import { Default_Sort_By, SortBy } from '../EventsList';
 
 type Props = {
     sortBy: SortBy;
@@ -20,20 +20,22 @@ const SortEventsButton = (props: Props) => {
     };
 
     const handleClose = () => {
+        console.log('handleClose');
         setAnchorEl(null);
     };
 
     const handleSortBtnClick = (event: React.MouseEvent<any, MouseEvent>) => {
-        // console.log(
-        //     'handleSortBtnClick, event target textContent',
-        //     (event.target as any).textContent
-        // );
-        props.setSortBy((event.target as any).textContent);
+        console.log('handleSortBtnClick');
+        const sortByString = (event.target as any).textContent;
+        console.log('handleSortBtnClick, event target textContent', sortByString);
+
+        if (sortByString) props.setSortBy(sortByString);
+        else props.setSortBy(Default_Sort_By);
     };
 
     return (
         <>
-            <div className="flex flex-col items-center justify-center gap-y-2">
+            <div className="flex flex-col items-end justify-center gap-y-2">
                 <Button
                     variant="outlined"
                     size="small"
@@ -68,7 +70,7 @@ const SortEventsButton = (props: Props) => {
                         <SortByAlpha fontSize="small" />
                     </ListItemIcon>
 
-                    <span className="mr-3">Event title</span>
+                    <span className="mr-3">{'Event title' as SortBy}</span>
 
                     <ListItemIcon className="ml-auto !min-w-fit">
                         <ArrowUpward fontSize="small" />
@@ -80,24 +82,24 @@ const SortEventsButton = (props: Props) => {
                         <DateRange fontSize="small" />
                     </ListItemIcon>
 
-                    <span className="mr-3">Creation date</span>
+                    <span className="mr-3">{'Creation date' as SortBy}</span>
 
                     <ListItemIcon className="ml-auto !min-w-fit">
                         <ArrowUpward fontSize="small" />
                     </ListItemIcon>
                 </MenuItem>
 
-                {/* <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleClose}>
                     <ListItemIcon>
                         <SocialDistance fontSize="small" />
                     </ListItemIcon>
 
-                    <span className="mr-3">Distance</span>
+                    <span className="mr-3">{'Distance from address' as SortBy}</span>
 
                     <ListItemIcon className="ml-auto !min-w-fit">
                         <ArrowUpward fontSize="small" />
                     </ListItemIcon>
-                </MenuItem> */}
+                </MenuItem>
             </Menu>
         </>
     );

@@ -8,6 +8,7 @@ export interface Event {
     ends_at: Date;
     charity_id: string;
     charity_name: string;
+    distanceToAddressInKiloMeters?: number;
 }
 
 export interface EventToCreate {

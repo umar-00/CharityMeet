@@ -1,79 +1,71 @@
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Divider,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider } from '@mui/material';
 import EventTypeSelect from './EventTypeSelect/EventTypeSelect';
 import RadiusSlider from './RadiusSlider/RadiusSlider';
+import { useEffect, useState } from 'react';
+import { useStore } from '../../../../../../stores/useStore';
 
 type Props = {
     openDialog: boolean;
-    // selectedValue: string;
     onClose: () => void;
 };
 
-export default function FilterDialog({ openDialog, onClose }: Props) {
-    // const { onClose, value: valueProp, open, ...other } = props;
+export default function FilterDialog(props: Props) {
+    const [radiusValueInKm, setRadiusValueInKm] = useState<number>(1);
 
-    // const [value, setValue] = useState();
-    // const radioGroupRef = useRef<HTMLElement>(null);
+    const searchRadiusInMeters = useStore((state) => state.searchRadiusInMeters);
 
-    //   React.useEffect(() => {
-    //     if (!open) {
-    //       setValue(valueProp);
-    //     }
-    //   }, [valueProp, open]);
+    const setSearchRadiusInMeters = useStore((state) => state.setSearchRadiusInMeters);
 
-    const handleEntering = () => {
-        // if (radioGroupRef.current != null) {
-        //     radioGroupRef.current.focus();
-        // }
+    const handleCancelClick = () => {
+        props.onClose();
     };
 
-    const handleClose = () => {
-        onClose();
+    const handleConfirmClick = () => {
+        console.log('handleConfirmClick');
+        setSearchRadiusInMeters(radiusValueInKm * 1000);
+        props.onClose();
     };
 
-    const handleOk = () => {
-        // onClose(value);
-    };
-
-    // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     // setValue((event.target as HTMLInputElement).value);
-    // };
+    useEffect(() => {
+        console.log('useEffect, searchRadiusInMeters', searchRadiusInMeters);
+        setRadiusValueInKm(searchRadiusInMeters / 1000);
+    }, [searchRadiusInMeters]);
 
     return (
         <Dialog
             sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 600 } }}
             maxWidth="xs"
-            TransitionProps={{ onEntering: handleEntering }}
-            open={openDialog}
-            onClose={handleClose}
+            open={props.openDialog}
+            onClose={handleCancelClick}
         >
             {/* <DialogTitle>Choose filters</DialogTitle> */}
+            <DialogTitle>Show events within this search radius</DialogTitle>
+
             <DialogContent dividers>
                 <div className="flex h-full w-full flex-col gap-y-10 py-2">
                     <div>
-                        <h1 className="text-lg font-extrabold">
-                            Distance radius
+                        {/* <h1 className="text-lg font-extrabold">
+                            Show events within this search radius
                         </h1>
-                        <Divider className="!my-4" />
-                        <RadiusSlider />
+                        <Divider className="!my-4" /> */}
+                        <RadiusSlider
+                            value={radiusValueInKm}
+                            setValue={setRadiusValueInKm}
+                            handleConfirmClick={handleConfirmClick}
+                            onClose={props.onClose}
+                        />
                     </div>
 
-                    <div>
+                    {/* <div>
                         <h1 className="text-lg font-extrabold">Event type</h1>
                         <Divider className="!my-4" />
                         <EventTypeSelect />
-                    </div>
+                    </div> */}
                 </div>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button variant="contained" onClick={handleOk}>
+                <Button onClick={handleCancelClick}>Cancel</Button>
+                <Button variant="contained" onClick={handleConfirmClick}>
                     Confirm filters
                 </Button>
             </DialogActions>
