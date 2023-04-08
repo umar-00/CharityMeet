@@ -50,7 +50,9 @@ const VolunteerDashboard = (props: props) => {
             const event = filteredEvents.find((event) => event.id === eventIdFromParams);
 
             if (!event) {
+                console.error('Event from search params not found in state.');
                 toast.error('Event not found in state.');
+                setSearchParams({});
                 return;
             }
 
