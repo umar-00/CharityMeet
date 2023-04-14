@@ -11,10 +11,7 @@ const CharitySideBarContent = (props: Props) => {
     return (
         <div className="flex w-full flex-col overflow-y-auto pt-6">
             <div className="flex w-full flex-col gap-y-3">
-                <NavLink
-                    to="/charity-dashboard/manage"
-                    className="flex justify-center"
-                >
+                <NavLink to="/charity-dashboard/manage" className="flex justify-center">
                     {({ isActive }) => (
                         <>
                             <Button
@@ -22,16 +19,12 @@ const CharitySideBarContent = (props: Props) => {
                                     backgroundColor: isActive
                                         ? theme.palette.action.hover
                                         : 'initial',
-                                    color: isActive
-                                        ? undefined
-                                        : theme.palette.text.primary,
+                                    color: isActive ? undefined : theme.palette.text.primary,
                                     width: '90%',
                                     justifyContent: 'flex-start',
                                 }}
                                 size="large"
-                                startIcon={
-                                    <ViewListIcon className="!text-3xl" />
-                                }
+                                startIcon={<ViewListIcon className="!text-3xl" />}
                             >
                                 Manage active events
                             </Button>
@@ -39,7 +32,7 @@ const CharitySideBarContent = (props: Props) => {
                     )}
                 </NavLink>
 
-                <NavLink
+                {/* <NavLink
                     to="/charity-dashboard/map-view"
                     className="flex justify-center"
                 >
@@ -63,7 +56,7 @@ const CharitySideBarContent = (props: Props) => {
                             </Button>
                         </>
                     )}
-                </NavLink>
+                </NavLink> */}
             </div>
         </div>
     );

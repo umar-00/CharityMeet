@@ -96,9 +96,9 @@ const EventsManagementListItem = (props: Props) => {
                     key={props.event.id}
                 />
 
-                <Button variant="outlined" color="primary" endIcon={<MapIcon />}>
+                {/* <Button variant="outlined" color="primary" endIcon={<MapIcon />}>
                     View on map
-                </Button>
+                </Button> */}
 
                 <Button
                     variant="outlined"
