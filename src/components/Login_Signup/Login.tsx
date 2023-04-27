@@ -71,15 +71,10 @@ function Login(props: Props) {
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                             <LockOutlinedIcon />
                         </Avatar>
-                        <Typography component="h1" variant="h5">
-                            Log in to Charity Meet
+                        <Typography component="h1" variant="h5" align="center">
+                            Log in to Charity Meet (for charities)
                         </Typography>
-                        <Box
-                            component="form"
-                            onSubmit={handleLogin}
-                            noValidate
-                            sx={{ mt: 1 }}
-                        >
+                        <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
                             <TextField
                                 margin="normal"
                                 required

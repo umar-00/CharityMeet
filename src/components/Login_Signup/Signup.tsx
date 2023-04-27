@@ -54,7 +54,7 @@ function Signup(props: Props) {
                 <Container component="main" maxWidth="xs">
                     <Box
                         sx={{
-                            marginTop: 3,
+                            marginTop: 1,
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -63,8 +63,8 @@ function Signup(props: Props) {
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                             <HowToRegIcon />
                         </Avatar>
-                        <Typography component="h1" variant="h5">
-                            Sign up to Charity Meet
+                        <Typography component="h1" variant="h5" align="center">
+                            Sign up to Charity Meet (for charities)
                         </Typography>
                         <Box component="form" onSubmit={handleSignup} sx={{ mt: 1 }}>
                             <TextField
