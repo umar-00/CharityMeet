@@ -29,7 +29,7 @@ export const createUserSlice: StateCreator<
     [['zustand/devtools', never]],
     [],
     UserSlice
-> = (set) => ({
+> = (set, get) => ({
     authenticatedUser: null,
 
     charity: null,
@@ -65,6 +65,9 @@ export const createUserSlice: StateCreator<
             false,
             'Successfully signed in'
         );
+
+        get().getUserSessionAndCharity();
+
         return '/charity-dashboard/manage';
 
         // set({ isLoading: false, redirectTo: '/charity-dashboard/manage', user: { email } }, false, "Successfully signed in, redirect to CharityDashboard Manage page");
