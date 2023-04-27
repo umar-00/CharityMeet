@@ -34,7 +34,8 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "netlify": "node_modules/.bin/netlify"
   },
   "eslintConfig": {
     "extends": [

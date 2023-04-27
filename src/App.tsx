@@ -18,7 +18,6 @@ import { ToastContainer } from 'react-toastify';
 import { useStore } from './stores/useStore';
 import PrivateRoutes from './components/PrivateRoutes/PrivateRoutes';
 import { useLoadScript } from '@react-google-maps/api';
-import { GOOGLE_MAPS_API_KEY } from '../apikeys';
 
 const darkTheme = createTheme({
     palette: {
@@ -38,7 +37,7 @@ function App() {
     const [mode, setMode] = useState<'light' | 'dark'>('dark');
 
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+        googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY!,
         libraries: googleMapLibrariesToLoad,
     });
 
